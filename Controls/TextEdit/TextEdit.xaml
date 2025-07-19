@@ -6,6 +6,7 @@
              mc:Ignorable="d">
     <Grid>
         <TextBox Name="Editor"
+                 FontFamily="MS Gothic"
                  Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"
                  AcceptsReturn="True"
                  AcceptsTab="True"

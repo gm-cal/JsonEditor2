@@ -1,0 +1,24 @@
+<Window x:Class="Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Settings" SizeToContent="WidthAndHeight">
+    <StackPanel Margin="10">
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+            <TextBlock Text="Indent Style:" Width="100"/>
+            <ComboBox Width="150" SelectedItem="{Binding IndentStyle}">
+                <ComboBoxItem Content="2 Spaces"/>
+                <ComboBoxItem Content="4 Spaces"/>
+                <ComboBoxItem Content="Tab"/>
+            </ComboBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+            <TextBlock Text="Indent Shortcut:" Width="100"/>
+            <TextBox Width="150" Text="{Binding IndentShortcut}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+            <TextBlock Text="Unindent Shortcut:" Width="100"/>
+            <TextBox Width="150" Text="{Binding UnindentShortcut}"/>
+        </StackPanel>
+        <Button Content="OK" Width="80" HorizontalAlignment="Right" Click="OnOk"/>
+    </StackPanel>
+</Window>
