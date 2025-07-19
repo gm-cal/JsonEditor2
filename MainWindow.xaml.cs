@@ -1,12 +1,10 @@
 using System.Windows;
-using JsonEditor2.Services;
-using JsonEditor2.ViewModels;
+using Services;
+using ViewModels;
 
-namespace JsonEditor2{
-    public partial class MainWindow : Window{
-        public MainWindow(IFileService fileService, IJsonService jsonService){
-            InitializeComponent();
-            DataContext = new MainViewModel(fileService, jsonService);
-        }
+public partial class MainWindow : Window{
+    public MainWindow(IFileService fileService, IJsonService jsonService){
+        InitializeComponent();
+        DataContext = new MainViewModel(fileService, jsonService);
     }
 }

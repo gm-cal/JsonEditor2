@@ -2,16 +2,16 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:JsonEditor2.Controls"
-        Title="Jsonエディター" Height="450" Width="800">
+        Title="JsonEditor" Height="450" Width="800">
     <DockPanel>
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar>
+                <Button Content="開く" Command="{Binding SelectedEditor.OpenCommand}" Margin="5,0"/>
+                <Button Content="保存" Command="{Binding SelectedEditor.SaveCommand}" Margin="5,0"/>
                 <TextBlock Text="インデント:" Margin="5,0"/>
                 <TextBox Width="40" Text="{Binding SelectedEditor.IndentWidth, UpdateSourceTrigger=PropertyChanged}"/>
                 <Button Content="変換" Command="{Binding SelectedEditor.ConvertCommand}" Margin="5,0"/>
                 <Button Content="整形" Command="{Binding SelectedEditor.FormatCommand}" Margin="5,0"/>
-                <Button Content="開く" Command="{Binding SelectedEditor.OpenCommand}" Margin="5,0"/>
-                <Button Content="保存" Command="{Binding SelectedEditor.SaveCommand}" Margin="5,0"/>
             </ToolBar>
         </ToolBarTray>
         <StatusBar DockPanel.Dock="Bottom">

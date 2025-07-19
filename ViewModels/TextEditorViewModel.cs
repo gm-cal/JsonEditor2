@@ -2,10 +2,11 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using JsonEditor2.Services;
+using Services;
 using Utils;
 
-namespace JsonEditor2.ViewModels{
+namespace ViewModels{
+    // テキストエディタのViewModel。ファイル操作やJSON変換・整形などの機能を提供します。
     public class TextEditorViewModel : INotifyPropertyChanged{
         private readonly IFileService fileService;
         private readonly IJsonService jsonService;
@@ -16,6 +17,9 @@ namespace JsonEditor2.ViewModels{
         private string title = string.Empty;
         private static int newFileCounter = 1;
 
+        // --- コンストラクタ。依存サービスを受け取り、コマンドを初期化します。
+        // fileService  ファイル操作サービス
+        // jsonService  JSON操作サービス
         public TextEditorViewModel(IFileService fileService, IJsonService jsonService){
             this.fileService = fileService;
             this.jsonService = jsonService;
@@ -26,31 +30,40 @@ namespace JsonEditor2.ViewModels{
             Title = $"新規テキスト_{newFileCounter++}";
         }
 
+        // エディタ内のテキスト内容
         public string Text{
             get{ return text; }
             set{ text = value; OnPropertyChanged(); }
         }
 
+        // ステータスメッセージ
         public string Status{
             get{ return status; }
             set{ status = value; OnPropertyChanged(); }
         }
 
+        // タブ区切りテキストをJSONに変換するコマンド
         public ICommand ConvertCommand{ get; }
+        // JSONを整形するコマンド
         public ICommand FormatCommand{ get; }
+        // ファイルを開くコマンド
         public ICommand OpenCommand{ get; }
+        // ファイルを保存するコマンド
         public ICommand SaveCommand{ get; }
 
+        // JSON整形時のインデント幅
         public int IndentWidth{
             get{ return indentWidth; }
             set{ indentWidth = value; OnPropertyChanged(); }
         }
 
+        // タブタイトル
         public string Title{
             get{ return title; }
             private set{ title = value; OnPropertyChanged(); }
         }
 
+        // 編集対象ファイルのパス
         public string FilePath{
             get{ return filePath; }
             set{
@@ -64,6 +77,7 @@ namespace JsonEditor2.ViewModels{
             }
         }
 
+        // テキストをタブ区切りからJSONへ変換します。
         private void Convert(){
             if(jsonService.TryConvertTabToJson(Text, IndentWidth, out string json, out string error)){
                 Text = json;
@@ -73,6 +87,7 @@ namespace JsonEditor2.ViewModels{
             }
         }
 
+        // テキスト(JSON)を整形します。
         private void Format(){
             if(jsonService.TryFormatJson(Text, IndentWidth, out string formatted, out string error)){
                 Text = formatted;
@@ -82,6 +97,7 @@ namespace JsonEditor2.ViewModels{
             }
         }
 
+        // ファイルを読み込みます。
         private void Open(){
             if(File.Exists(FilePath)){
                 Text = fileService.Load(FilePath);
@@ -91,13 +107,17 @@ namespace JsonEditor2.ViewModels{
             }
         }
 
+        // テキストをファイルに保存します。
         private void Save(){
             fileService.Save(FilePath, Text);
             Status = $"{Path.GetFileName(FilePath)} を保存しました";
         }
 
+        // <inheritdoc/>
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        // プロパティ変更通知を発行します。
+        /// name    プロパティ名
         private void OnPropertyChanged([CallerMemberName] string? name = null){
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }

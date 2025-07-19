@@ -2,10 +2,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using JsonEditor2.Services;
+using Services;
 using Utils;
 
-namespace JsonEditor2.ViewModels{
+namespace ViewModels{
     public class MainViewModel : INotifyPropertyChanged{
         private TextEditorViewModel? selectedEditor;
         public ObservableCollection<TextEditorViewModel> Editors{ get; }
