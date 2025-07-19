@@ -13,6 +13,7 @@ namespace Views{
                 (EditorSettings.IndentString.Length == 2 ? "2 Spaces" : "4 Spaces");
             ViewModel.IndentShortcut = conv.ConvertToString(EditorSettings.IndentGesture)!;
             ViewModel.UnindentShortcut = conv.ConvertToString(EditorSettings.UnindentGesture)!;
+            ViewModel.ShowLineNumbers = EditorSettings.ShowLineNumbers;
         }
         private void OnOk(object sender, RoutedEventArgs e){
             EditorSettings.Apply(ViewModel);

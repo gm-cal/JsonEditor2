@@ -5,7 +5,18 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <ListBox x:Name="LineNumbers"
+                 Width="40"
+                 Background="LightGray"
+                 BorderThickness="0"
+                 SelectionMode="Extended"
+                 SelectionChanged="OnLineNumberSelection"/>
         <TextBox Name="Editor"
+                 Grid.Column="1"
                  FontFamily="MS Gothic"
                  Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"
                  AcceptsReturn="True"
