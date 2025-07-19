@@ -12,6 +12,8 @@
                 <TextBox Width="40" Text="{Binding SelectedEditor.IndentWidth, UpdateSourceTrigger=PropertyChanged}"/>
                 <Button Content="変換" Command="{Binding SelectedEditor.ConvertCommand}" Margin="5,0"/>
                 <Button Content="整形" Command="{Binding SelectedEditor.FormatCommand}" Margin="5,0"/>
+                <Button Content="UpperCamel" Command="{Binding SelectedEditor.ToUpperCamelCommand}" Margin="5,0"/>
+                <Button Content="snake_case" Command="{Binding SelectedEditor.ToSnakeCaseCommand}" Margin="5,0"/>
             </ToolBar>
         </ToolBarTray>
         <StatusBar DockPanel.Dock="Bottom">

@@ -25,6 +25,8 @@ namespace ViewModels{
             this.jsonService = jsonService;
             ConvertCommand = new RelayCommand(_ => Convert());
             FormatCommand = new RelayCommand(_ => Format());
+            ToUpperCamelCommand = new RelayCommand(_ => ToUpperCamel());
+            ToSnakeCaseCommand = new RelayCommand(_ => ToSnakeCase());
             OpenCommand = new RelayCommand(_ => Open());
             SaveCommand = new RelayCommand(_ => Save());
             Title = $"新規テキスト_{newFileCounter++}";
@@ -46,6 +48,10 @@ namespace ViewModels{
         public ICommand ConvertCommand{ get; }
         // JSONを整形するコマンド
         public ICommand FormatCommand{ get; }
+        // プロパティ名をUpperCamelに変換するコマンド
+        public ICommand ToUpperCamelCommand{ get; }
+        // プロパティ名をsnake_caseに変換するコマンド
+        public ICommand ToSnakeCaseCommand{ get; }
         // ファイルを開くコマンド
         public ICommand OpenCommand{ get; }
         // ファイルを保存するコマンド
@@ -92,6 +98,24 @@ namespace ViewModels{
             if(jsonService.TryFormatJson(Text, IndentWidth, out string formatted, out string error)){
                 Text = formatted;
                 Status = "整形しました";
+            }else{
+                Status = error;
+            }
+        }
+
+        private void ToUpperCamel(){
+            if(jsonService.TryToUpperCamel(Text, IndentWidth, out string converted, out string error)){
+                Text = converted;
+                Status = "UpperCamelに変換しました";
+            }else{
+                Status = error;
+            }
+        }
+
+        private void ToSnakeCase(){
+            if(jsonService.TryToSnakeCase(Text, IndentWidth, out string converted, out string error)){
+                Text = converted;
+                Status = "snake_caseに変換しました";
             }else{
                 Status = error;
             }
