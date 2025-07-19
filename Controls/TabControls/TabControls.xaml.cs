@@ -3,17 +3,18 @@ using ViewModels;
 
 namespace Controls{
     public partial class TabControls : UserControl{
+        private TabControl tabControl => Tabs;
         public TabControls(){
             InitializeComponent();
         }
 
-        public TextEdit? SelectedTextEdit => Tabs.SelectedContent as TextEdit;
+        public TextEdit? SelectedTextEdit => tabControl.SelectedContent as TextEdit;
 
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs e){
-            if(Tabs.SelectedItem is TabItem){
+            if(tabControl.SelectedItem is TabItem){
                 if(DataContext is MainViewModel vm){
                     vm.NewTabCommand.Execute(null);
-                    Tabs.SelectedIndex = vm.Editors.Count - 1;
+                    tabControl.SelectedIndex = vm.Editors.Count - 1;
                 }
             }
         }

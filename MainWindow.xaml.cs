@@ -1,4 +1,5 @@
 using System.Windows;
+using Controls;
 using Services;
 using ViewModels;
 using Views;
@@ -9,12 +10,14 @@ public partial class MainWindow : Window{
         DataContext = new MainViewModel(fileService, jsonService);
     }
 
+    private TabControls tabsControl => TabsControl;
+
     private void OnIndent(object sender, RoutedEventArgs e){
-        TabsControl.SelectedTextEdit?.IndentSelection();
+        tabsControl.SelectedTextEdit?.IndentSelection();
     }
 
     private void OnUnindent(object sender, RoutedEventArgs e){
-        TabsControl.SelectedTextEdit?.UnindentSelection();
+        tabsControl.SelectedTextEdit?.UnindentSelection();
     }
 
     private void OnSettings(object sender, RoutedEventArgs e){

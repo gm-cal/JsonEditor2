@@ -1,3 +1,4 @@
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -5,9 +6,11 @@ using ViewModels;
 
 namespace Controls{
     public partial class TextEdit : UserControl{
+        private TextBox editorControl => Editor;
+
         public TextEdit(){
             InitializeComponent();
-            Editor.PreviewKeyDown += OnPreviewKeyDown;
+            editorControl.PreviewKeyDown += OnPreviewKeyDown;
         }
 
         public void IndentSelection(){
@@ -29,10 +32,10 @@ namespace Controls{
         }
 
         private void ModifySelection(bool indent){
-            string text = Editor.Text.Replace("\r\n", "\n");
+            string text = editorControl.Text.Replace("\r\n", "\n");
             string[] lines = text.Split('\n');
-            int startLine = Editor.GetLineIndexFromCharacterIndex(Editor.SelectionStart);
-            int endLine = Editor.GetLineIndexFromCharacterIndex(Editor.SelectionStart + Editor.SelectionLength);
+            int startLine = editorControl.GetLineIndexFromCharacterIndex(editorControl.SelectionStart);
+            int endLine = editorControl.GetLineIndexFromCharacterIndex(editorControl.SelectionStart + editorControl.SelectionLength);
 
             int delta = 0;
             string indentStr = EditorSettings.IndentString;
@@ -52,9 +55,9 @@ namespace Controls{
                 lines[i] = line;
             }
 
-            Editor.Text = string.Join(System.Environment.NewLine, lines);
-            Editor.SelectionStart = Editor.GetCharacterIndexFromLineIndex(startLine);
-            Editor.SelectionLength = System.Math.Max(0, (Editor.GetCharacterIndexFromLineIndex(endLine) + lines[endLine].Length) - Editor.SelectionStart + delta);
+            editorControl.Text = string.Join(Environment.NewLine, lines);
+            editorControl.SelectionStart = editorControl.GetCharacterIndexFromLineIndex(startLine);
+            editorControl.SelectionLength = Math.Max(0, (editorControl.GetCharacterIndexFromLineIndex(endLine) + lines[endLine].Length) - editorControl.SelectionStart + delta);
         }
 
         private void OnDrop(object sender, DragEventArgs e){
