@@ -19,6 +19,7 @@
             <TextBlock Text="Unindent Shortcut:" Width="100"/>
             <TextBox Width="150" Text="{Binding UnindentShortcut}"/>
         </StackPanel>
+        <CheckBox Content="Show Line Numbers" IsChecked="{Binding ShowLineNumbers}" Margin="0,0,0,5"/>
         <Button Content="OK" Width="80" HorizontalAlignment="Right" Click="OnOk"/>
     </StackPanel>
 </Window>

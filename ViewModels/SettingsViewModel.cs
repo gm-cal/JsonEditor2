@@ -6,6 +6,7 @@ namespace ViewModels{
         private string indentStyle = "4 Spaces";
         private string indentShortcut = "Tab";
         private string unindentShortcut = "Shift+Tab";
+        private bool showLineNumbers = true;
 
         public string IndentStyle{
             get => indentStyle;
@@ -18,6 +19,10 @@ namespace ViewModels{
         public string UnindentShortcut{
             get => unindentShortcut;
             set{ unindentShortcut = value; OnPropertyChanged(); }
+        }
+        public bool ShowLineNumbers{
+            get => showLineNumbers;
+            set{ showLineNumbers = value; OnPropertyChanged(); }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
