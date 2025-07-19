@@ -1,16 +1,12 @@
-﻿using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using JsonEditor2.Services;
+using JsonEditor2.ViewModels;
 
-public partial class MainWindow : Window{
-    public MainWindow(){
-        InitializeComponent();
+namespace JsonEditor2{
+    public partial class MainWindow : Window{
+        public MainWindow(IFileService fileService, IJsonService jsonService){
+            InitializeComponent();
+            DataContext = new MainViewModel(fileService, jsonService);
+        }
     }
 }

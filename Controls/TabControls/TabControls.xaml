@@ -1,0 +1,20 @@
+<UserControl x:Class="JsonEditor2.Controls.TabControls"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:JsonEditor2.Controls"
+             xmlns:viewModels="clr-namespace:JsonEditor2.ViewModels">
+    <Grid>
+        <TabControl ItemsSource="{Binding Editors}" SelectedItem="{Binding SelectedEditor, Mode=TwoWay}">
+            <TabControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type viewModels:TextEditorViewModel}">
+                    <TextBlock Text="{Binding FilePath, FallbackValue='Untitled'}"/>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+                <DataTemplate DataType="{x:Type viewModels:TextEditorViewModel}">
+                    <local:TextEdit/>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
+    </Grid>
+</UserControl>
