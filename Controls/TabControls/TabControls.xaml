@@ -4,10 +4,21 @@
              xmlns:local="clr-namespace:JsonEditor2.Controls"
              xmlns:viewModels="clr-namespace:JsonEditor2.ViewModels">
     <Grid>
-        <TabControl ItemsSource="{Binding Editors}" SelectedItem="{Binding SelectedEditor, Mode=TwoWay}">
+        <TabControl x:Name="Tabs"
+                    SelectedItem="{Binding SelectedEditor, Mode=TwoWay}"
+                    SelectionChanged="OnSelectionChanged">
+            <TabControl.Resources>
+                <CollectionViewSource x:Key="EditorsSource" Source="{Binding Editors}"/>
+            </TabControl.Resources>
+            <TabControl.ItemsSource>
+                <CompositeCollection>
+                    <CollectionContainer Collection="{Binding Source={StaticResource EditorsSource}}"/>
+                    <TabItem Header="+"/>
+                </CompositeCollection>
+            </TabControl.ItemsSource>
             <TabControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type viewModels:TextEditorViewModel}">
-                    <TextBlock Text="{Binding FilePath, FallbackValue='Untitled'}"/>
+                    <TextBlock Text="{Binding Title}"/>
                 </DataTemplate>
             </TabControl.ItemTemplate>
             <TabControl.ContentTemplate>

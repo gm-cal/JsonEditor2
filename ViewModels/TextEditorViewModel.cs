@@ -13,6 +13,8 @@ namespace JsonEditor2.ViewModels{
         private string filePath = string.Empty;
         private string status = string.Empty;
         private int indentWidth = 4;
+        private string title = string.Empty;
+        private static int newFileCounter = 1;
 
         public TextEditorViewModel(IFileService fileService, IJsonService jsonService){
             this.fileService = fileService;
@@ -21,6 +23,7 @@ namespace JsonEditor2.ViewModels{
             FormatCommand = new RelayCommand(_ => Format());
             OpenCommand = new RelayCommand(_ => Open());
             SaveCommand = new RelayCommand(_ => Save());
+            Title = $"新規テキスト_{newFileCounter++}";
         }
 
         public string Text{
@@ -43,15 +46,28 @@ namespace JsonEditor2.ViewModels{
             set{ indentWidth = value; OnPropertyChanged(); }
         }
 
+        public string Title{
+            get{ return title; }
+            private set{ title = value; OnPropertyChanged(); }
+        }
+
         public string FilePath{
             get{ return filePath; }
-            set{ filePath = value; OnPropertyChanged(); }
+            set{
+                filePath = value;
+                if(string.IsNullOrEmpty(filePath)){
+                    Title = $"新規テキスト_{newFileCounter++}";
+                }else{
+                    Title = Path.GetFileName(filePath);
+                }
+                OnPropertyChanged();
+            }
         }
 
         private void Convert(){
             if(jsonService.TryConvertTabToJson(Text, IndentWidth, out string json, out string error)){
                 Text = json;
-                Status = "Converted";
+                Status = "変換しました";
             }else{
                 Status = error;
             }
@@ -60,7 +76,7 @@ namespace JsonEditor2.ViewModels{
         private void Format(){
             if(jsonService.TryFormatJson(Text, IndentWidth, out string formatted, out string error)){
                 Text = formatted;
-                Status = "Formatted";
+                Status = "整形しました";
             }else{
                 Status = error;
             }
@@ -69,15 +85,15 @@ namespace JsonEditor2.ViewModels{
         private void Open(){
             if(File.Exists(FilePath)){
                 Text = fileService.Load(FilePath);
-                Status = $"Loaded {Path.GetFileName(FilePath)}";
+                Status = $"{Path.GetFileName(FilePath)} を読み込みました";
             }else{
-                Status = "File not found";
+                Status = "ファイルが見つかりません";
             }
         }
 
         private void Save(){
             fileService.Save(FilePath, Text);
-            Status = $"Saved {Path.GetFileName(FilePath)}";
+            Status = $"{Path.GetFileName(FilePath)} を保存しました";
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
