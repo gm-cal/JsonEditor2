@@ -12,7 +12,7 @@ namespace Services{
             result = string.Empty;
             try{
                 JsonNode root = JsonNode.Parse(input)!;
-                Rename(root);
+                Rename(root, converter);
                 JsonSerializerOptions options = new JsonSerializerOptions{ WriteIndented = true };
                 string raw = JsonSerializer.Serialize(root, options);
                 result = AdjustIndent(raw, indentWidth);
@@ -25,20 +25,18 @@ namespace Services{
                 return false;
             }
         }
-        private static void Rename(JsonNode? node){
+        private static void Rename(JsonNode? node, Func<string, string> converter){
             if(node is JsonObject obj){
                 List<KeyValuePair<string, JsonNode?>> props = obj.ToList();
+                obj.Clear();
                 foreach(KeyValuePair<string, JsonNode?> p in props){
-                    obj.Remove(p.Key);
-                }
-                foreach(KeyValuePair<string, JsonNode?> p in props){
-                    string newName = ToSnakeCase(p.Key);
-                    Rename(p.Value);
+                    Rename(p.Value, converter);
+                    string newName = converter(p.Key);
                     obj[newName] = p.Value;
                 }
             }else if(node is JsonArray arr){
                 foreach(JsonNode? child in arr){
-                    Rename(child);
+                    Rename(child, converter);
                 }
             }
         }

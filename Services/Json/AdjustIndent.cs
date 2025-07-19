@@ -6,7 +6,7 @@ namespace Services{
         // 戻り値       インデント幅を調整したJSON文字列
         private static string AdjustIndent(string json, int indentWidth){
             string indent = new string(' ', indentWidth);
-            string[] lines = json.Split('\n');
+            string[] lines = json.Replace("\r\n", "\n").Split('\n');
             for(int i = 0; i < lines.Length; i++){
                 lines[i] = lines[i].Replace("    ", indent);
             }

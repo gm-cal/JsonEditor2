@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Microsoft.Win32;
 using Services;
 using Utils;
 
@@ -123,18 +124,28 @@ namespace ViewModels{
 
         // ファイルを読み込みます。
         private void Open(){
-            if(File.Exists(FilePath)){
-                Text = fileService.Load(FilePath);
-                Status = $"{Path.GetFileName(FilePath)} を読み込みました";
-            }else{
-                Status = "ファイルが見つかりません";
+            OpenFileDialog dlg = new OpenFileDialog();
+            if(dlg.ShowDialog() == true){
+                FilePath = dlg.FileName;
+                if(File.Exists(FilePath)){
+                    Text = fileService.Load(FilePath);
+                    Status = $"{Path.GetFileName(FilePath)} を読み込みました";
+                }
             }
         }
 
         // テキストをファイルに保存します。
         private void Save(){
-            fileService.Save(FilePath, Text);
-            Status = $"{Path.GetFileName(FilePath)} を保存しました";
+            SaveFileDialog dlg = new SaveFileDialog();
+            if(!string.IsNullOrEmpty(FilePath)){
+                dlg.FileName = Path.GetFileName(FilePath);
+                dlg.InitialDirectory = Path.GetDirectoryName(FilePath);
+            }
+            if(dlg.ShowDialog() == true){
+                FilePath = dlg.FileName;
+                fileService.Save(FilePath, Text);
+                Status = $"{Path.GetFileName(FilePath)} を保存しました";
+            }
         }
 
         // <inheritdoc/>
