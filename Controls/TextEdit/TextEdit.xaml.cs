@@ -1,8 +1,8 @@
 using System.Windows;
 using System.Windows.Controls;
-using JsonEditor2.ViewModels;
+using ViewModels;
 
-namespace JsonEditor2.Controls{
+namespace Controls{
     public partial class TextEdit : UserControl{
         public TextEdit(){
             InitializeComponent();
