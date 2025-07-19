@@ -7,6 +7,8 @@ namespace Controls{
             InitializeComponent();
         }
 
+        public TextEdit? SelectedTextEdit => Tabs.SelectedContent as TextEdit;
+
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs e){
             if(Tabs.SelectedItem is TabItem){
                 if(DataContext is MainViewModel vm){
