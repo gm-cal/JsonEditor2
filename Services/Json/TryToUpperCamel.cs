@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace Services{
     public partial class JsonService : IJsonService{
         // --- アッパーキャメルケース変換
@@ -7,8 +9,19 @@ namespace Services{
 
         private static string ToUpperCamel(string name){
             if(string.IsNullOrEmpty(name)) return name;
-            if(name.Length == 1) return char.ToUpperInvariant(name[0]).ToString();
-            return char.ToUpperInvariant(name[0]) + name.Substring(1);
+            string[] parts = name.Split('_', StringSplitOptions.RemoveEmptyEntries);
+            if(parts.Length == 0) return name;
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append(parts[0].ToLowerInvariant());
+            for(int i = 1; i < parts.Length; i++){
+                string part = parts[i];
+                if(part.Length > 0){
+                    sb.Append(char.ToUpperInvariant(part[0]));
+                    if(part.Length > 1) sb.Append(part.Substring(1).ToLowerInvariant());
+                }
+            }
+            return sb.ToString();
         }
     }
 }
