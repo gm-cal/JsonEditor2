@@ -1,7 +1,16 @@
-﻿using System.Configuration;
-using System.Data;
 using System.Windows;
+using JsonEditor2.Services;
+using JsonEditor2.ViewModels;
 
-public partial class App : Application{
+namespace JsonEditor2{
+    public partial class App : Application{
+        private readonly IFileService fileService = new FileService();
+        private readonly IJsonService jsonService = new JsonService();
+
+        protected override void OnStartup(StartupEventArgs e){
+            base.OnStartup(e);
+            MainWindow window = new MainWindow(fileService, jsonService);
+            window.Show();
+        }
+    }
 }
-
