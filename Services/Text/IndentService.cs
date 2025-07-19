@@ -1,10 +1,11 @@
 using System;
 using System.Windows.Controls;
+using Utils;
 
 namespace Services{
     public static class IndentService{
-        // Modify selected lines by indenting or unindenting.
-        // Tab input is replaced with spaces defined by EditorSettings.IndentString.
+        // 選択された行をインデントまたはインデント解除します。
+        // Tab入力はEditorSettings.IndentStringで定義されたスペースに置き換えられます。
         public static void ModifySelection(TextBox editor, bool indent){
             string text = editor.Text.Replace("\r\n", "\n");
             string[] lines = text.Split('\n');
@@ -12,7 +13,8 @@ namespace Services{
             int endLine = editor.GetLineIndexFromCharacterIndex(editor.SelectionStart + editor.SelectionLength);
 
             int delta = 0;
-            string indentStr = EditorSettings.IndentString;
+            // Define the indent string here or reference your settings class appropriately.
+            string indentStr = " ".Repeat(4); // 4 spaces as default, replace with your preferred indent or settings reference
 
             for(int i = startLine; i <= endLine && i < lines.Length; i++){
                 string line = lines[i];
