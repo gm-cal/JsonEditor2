@@ -18,7 +18,14 @@
             </TabControl.ItemsSource>
             <TabControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type viewModels:TextEditorViewModel}">
-                    <TextBlock Text="{Binding Title}"/>
+                    <DockPanel LastChildFill="False" Orientation="Horizontal">
+                        <TextBlock Text="{Binding Title}" Margin="0,0,5,0"/>
+                        <Button Content="x"
+                                Width="16" Height="16"
+                                Padding="0" Margin="5,0,0,0"
+                                Command="{Binding DataContext.CloseTabCommand, RelativeSource={RelativeSource AncestorType=local:TabControls}}"
+                                CommandParameter="{Binding}"/>
+                    </DockPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>
             <TabControl.ContentTemplate>

@@ -10,6 +10,7 @@ namespace ViewModels{
         private TextEditorViewModel? selectedEditor;
         public ObservableCollection<TextEditorViewModel> Editors{ get; }
         public ICommand NewTabCommand{ get; }
+        public ICommand CloseTabCommand{ get; }
         private readonly IFileService fileService;
         private readonly IJsonService jsonService;
 
@@ -18,6 +19,7 @@ namespace ViewModels{
             this.jsonService = jsonService;
             Editors = new ObservableCollection<TextEditorViewModel>();
             NewTabCommand = new RelayCommand(_ => AddTab());
+            CloseTabCommand = new RelayCommand(e => RemoveTab(e as TextEditorViewModel), e => e is TextEditorViewModel);
             AddTab();
         }
 
@@ -30,6 +32,19 @@ namespace ViewModels{
             TextEditorViewModel editor = new TextEditorViewModel(fileService, jsonService);
             Editors.Add(editor);
             SelectedEditor = editor;
+        }
+
+        private void RemoveTab(TextEditorViewModel? editor){
+            if(editor == null) return;
+            int index = Editors.IndexOf(editor);
+            if(index >= 0){
+                Editors.RemoveAt(index);
+                if(Editors.Count == 0){
+                    AddTab();
+                }else{
+                    SelectedEditor = Editors[Math.Min(index, Editors.Count - 1)];
+                }
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
