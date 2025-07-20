@@ -11,6 +11,7 @@ using Services;
 namespace Controls{
     public partial class TextEdit : UserControl{
         private ListBox lineList => LinesList;
+        private TextBox editorBox => EditorBox;
         public event EventHandler<int>? LineControlRequested;
         private bool internalChange = false;
         private readonly ObservableCollection<TextLine> lines = new ObservableCollection<TextLine>();
@@ -21,6 +22,7 @@ namespace Controls{
             InitializeComponent();
             DataContextChanged += OnDataContextChanged;
             EditorSettings.Changed += (_, _) => UpdateLineVisibility();
+            UpdateLineVisibility();
         }
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e){
@@ -75,9 +77,10 @@ namespace Controls{
         }
 
         public (IList<TextLine> Lines, int StartLine, int EndLine) GetSelectedLineRange(){
-            int start = lineList.SelectedIndex;
-            int end = start + lineList.SelectedItems.Count - 1;
-            if(start < 0) start = end = 0;
+            int startChar = editorBox.SelectionStart;
+            int endChar = startChar + editorBox.SelectionLength;
+            int start = editorBox.GetLineIndexFromCharacterIndex(startChar);
+            int end = editorBox.GetLineIndexFromCharacterIndex(endChar);
             return (lines, start, end);
         }
 
