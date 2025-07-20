@@ -30,9 +30,9 @@ namespace Services{
 
                 result = string.Join("\n", convertedLines);
                 return true;
-            }catch(JsonException ex){
-                error = $"Line {ex.LineNumber}, Position {ex.BytePositionInLine}: {ex.Message}";
-                return false;
+            }catch(JsonException){
+                result = RenamePlainText(input, converter);
+                return true;
             }catch(Exception ex){
                 error = ex.Message;
                 return false;
@@ -53,6 +53,14 @@ namespace Services{
                     Rename(child, converter);
                 }
             }
+        }
+
+        private static string RenamePlainText(string input, Func<string, string> converter){
+            string[] lines = input.Replace("\r\n", "\n").Split('\n');
+            for(int i = 0; i < lines.Length; i++){
+                lines[i] = converter(lines[i]);
+            }
+            return string.Join(Environment.NewLine, lines);
         }
     }
 }

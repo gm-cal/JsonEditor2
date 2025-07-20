@@ -18,7 +18,7 @@ namespace Services{
                 Dictionary<string, string> dict = new Dictionary<string, string>();
                 string[] lines = input.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                 foreach(string line in lines){
-                    string[] parts = line.Split('\t');
+                    string[] parts = line.Split(new char[]{'\t', ' '}, 2, StringSplitOptions.RemoveEmptyEntries);
                     if(parts.Length < 2){
                         error = $"Invalid line: {line}";
                         return false;
