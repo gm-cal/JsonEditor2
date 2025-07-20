@@ -29,6 +29,8 @@
                                  Background="Transparent"
                                  AcceptsReturn="False"
                                  AcceptsTab="True"
+                                 PreviewKeyDown="OnTextBoxPreviewKeyDown"
+                                 DataObject.Pasting="OnTextBoxPasting"
                                  VerticalAlignment="Center"/>
                     </Grid>
                     <DataTemplate.Triggers>
