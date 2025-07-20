@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -14,12 +15,14 @@ namespace Controls{
         private readonly Stack<string> redoStack = new Stack<string>();
         private string lastText = string.Empty;
         private bool internalChange = false;
+        private readonly List<TextLine> lines = new();
 
         public TextEdit(){
             InitializeComponent();
             editorControl.PreviewKeyDown += OnPreviewKeyDown;
             editorControl.TextChanged += OnTextChanged;
             EditorSettings.Changed += (_, _) => UpdateLineNumberVisibility();
+            UpdateLineData();
             UpdateLineNumbers();
         }
 
@@ -50,7 +53,11 @@ namespace Controls{
         private void ModifySelection(bool indent){
             PushUndo();
             internalChange = true;
-            IndentService.ModifySelection(editorControl, indent);
+            var (currentLines, start, end) = GetSelectedLineRange();
+            IndentService.ModifySelection(currentLines, start, end, indent);
+            editorControl.Text = string.Join(Environment.NewLine, currentLines.Select(l => l.Text));
+            editorControl.SelectionStart = editorControl.GetCharacterIndexFromLineIndex(start);
+            editorControl.SelectionLength = Math.Max(0, editorControl.GetCharacterIndexFromLineIndex(end) + currentLines[end].Text.Length - editorControl.SelectionStart);
             internalChange = false;
             UpdateLineNumbers();
         }
@@ -73,6 +80,7 @@ namespace Controls{
                 redoStack.Clear();
             }
             lastText = editorControl.Text;
+            UpdateLineData();
             UpdateLineNumbers();
         }
 
@@ -106,7 +114,7 @@ namespace Controls{
         }
 
         private void UpdateLineNumbers(){
-            int count = editorControl.LineCount;
+            int count = lines.Count;
             List<string> nums = new();
             for(int i = 1; i <= count; i++) nums.Add(i.ToString());
             lineNumbers.ItemsSource = nums;
@@ -115,6 +123,20 @@ namespace Controls{
 
         private void UpdateLineNumberVisibility(){
             lineNumbers.Visibility = EditorSettings.ShowLineNumbers ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void UpdateLineData(){
+            lines.Clear();
+            string[] rawLines = editorControl.Text.Replace("\r\n", "\n").Split('\n');
+            foreach(string l in rawLines){
+                lines.Add(new TextLine{ Text = l });
+            }
+        }
+
+        public (List<TextLine> Lines, int StartLine, int EndLine) GetSelectedLineRange(){
+            int startLine = editorControl.GetLineIndexFromCharacterIndex(editorControl.SelectionStart);
+            int endLine = editorControl.GetLineIndexFromCharacterIndex(editorControl.SelectionStart + editorControl.SelectionLength);
+            return (lines, startLine, endLine);
         }
 
         private void OnLineNumberSelection(object sender, SelectionChangedEventArgs e){
