@@ -12,6 +12,7 @@ namespace Controls{
     public partial class TextEdit : UserControl{
         private TextBox editorControl => Editor;
         private ListBox lineNumbers => LineNumbers;
+        public event EventHandler<int>? LineControlRequested;
         private readonly Stack<string> undoStack = new Stack<string>();
         private readonly Stack<string> redoStack = new Stack<string>();
         private string lastText = string.Empty;
@@ -149,6 +150,16 @@ namespace Controls{
             int endPos = editorControl.GetCharacterIndexFromLineIndex(end) + editorControl.GetLineLength(end);
             editorControl.SelectionStart = startPos;
             editorControl.SelectionLength = Math.Max(0, endPos - startPos);
+        }
+
+        // ctrl-click on a line number triggers external control handling
+        private void OnLineNumberMouseDown(object sender, MouseButtonEventArgs e){
+            if((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control){
+                if(sender is ListBoxItem item && item.DataContext is TextLine line){
+                    LineControlRequested?.Invoke(this, line.LineNumber);
+                    e.Handled = true;
+                }
+            }
         }
     }
 }
