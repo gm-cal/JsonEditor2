@@ -21,7 +21,8 @@
                                    Padding="2"
                                    Foreground="Gray"
                                    VerticalAlignment="Center"
-                                   x:Name="LineNumberBlock"/>
+                                   x:Name="LineNumberBlock"
+                                   MouseLeftButtonDown="OnLineNumberMouseDown"/>
                         <TextBox Grid.Column="1"
                                  Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  BorderThickness="0"
