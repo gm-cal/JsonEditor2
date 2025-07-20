@@ -1,3 +1,6 @@
+// TextEdit コントロールのインデント操作を提供します。
+// 選択範囲のインデント・アンインデント、行番号の再設定、
+// 選択範囲取得などの機能を持ちます。
 using System;
 using System.Collections.Generic;
 using Services;
@@ -13,7 +16,7 @@ namespace Controls{
         }
 
         private void ModifySelection(bool indent){
-            var (currentLines, start, end) = SelectionService.GetSelectedLineRange(lines, lineList.SelectedItems, lineList.SelectedIndex);
+            (IList<TextLine> currentLines, int start, int end) = SelectionService.GetSelectedLineRange(lines, lineList.SelectedItems, lineList.SelectedIndex);
             IndentService.ModifySelection(currentLines, start, end, indent);
             Renumber();
             ScheduleVmUpdate();

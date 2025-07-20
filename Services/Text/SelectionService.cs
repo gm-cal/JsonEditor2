@@ -10,7 +10,7 @@ namespace Services{
 
             int start = int.MaxValue;
             int end = int.MinValue;
-            foreach(var item in selectedItems){
+            foreach(IList item in selectedItems){
                 if(item is TextLine line){
                     int idx = lines.IndexOf(line);
                     if(idx < start) start = idx;
