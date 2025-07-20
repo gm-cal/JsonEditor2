@@ -10,30 +10,28 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         
-        <ListBox x:Name="LineNumbers"
-                 Width="20"
+        <ListBox x:Name="LinesList"
+                 Grid.ColumnSpan="2"
                  FontFamily="MS Gothic"
-                 Background="#FFEEEEEE"
+                 Background="Transparent"
                  BorderThickness="0"
                  SelectionMode="Extended"
                  ItemsSource="{Binding Lines, RelativeSource={RelativeSource AncestorType=UserControl}}"
+
                  SelectionChanged="OnLineNumberSelection"
                  PreviewMouseLeftButtonDown="OnLineNumberMouseDown">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding LineNumber}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding LineNumber}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Text}"/>
+                    </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <TextBox Name="Editor"
-                 Grid.Column="1"
-                 FontFamily="MS Gothic"
-                 Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"
-                 AcceptsReturn="True"
-                 AcceptsTab="True"
-                 VerticalScrollBarVisibility="Auto"
-                 HorizontalScrollBarVisibility="Auto"
-                 AllowDrop="True"
-                 Drop="OnDrop"/>
     </Grid>
 </UserControl>
