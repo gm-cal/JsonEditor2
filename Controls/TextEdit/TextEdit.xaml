@@ -17,6 +17,8 @@
                  BorderThickness="0"
                  SelectionMode="Extended"
                  ItemsSource="{Binding Lines, RelativeSource={RelativeSource AncestorType=UserControl}}"
+
+                 SelectionChanged="OnLineNumberSelection"
                  PreviewMouseLeftButtonDown="OnLineNumberMouseDown">
             <ListBox.ItemTemplate>
                 <DataTemplate>

@@ -10,8 +10,13 @@ using Services;
 
 namespace Controls{
     public partial class TextEdit : UserControl{
-        private ListBox lineList => LinesList;
+        private TextBox editorControl => Editor;
+        private ListBox lineNumbers => LineNumbers;
         public event EventHandler<int>? LineControlRequested;
+        private readonly Stack<string> undoStack = new Stack<string>();
+        private readonly Stack<string> redoStack = new Stack<string>();
+        private string lastText = string.Empty;
+        private bool internalChange = false;
         private readonly ObservableCollection<TextLine> lines = new();
         private bool internalChange = false;
 
@@ -92,6 +97,16 @@ namespace Controls{
 
         private void UpdateLineVisibility(){
             lineList.Visibility = EditorSettings.ShowLineNumbers ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        // ctrl-click on a line number triggers external control handling
+        private void OnLineNumberMouseDown(object sender, MouseButtonEventArgs e){
+            if((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control){
+                if(sender is ListBoxItem item && item.DataContext is TextLine line){
+                    LineControlRequested?.Invoke(this, line.LineNumber);
+                    e.Handled = true;
+                }
+            }
         }
     }
 }
