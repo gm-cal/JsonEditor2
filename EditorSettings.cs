@@ -3,12 +3,25 @@ using System.Text.Json;
 using System.Windows.Input;
 using ViewModels;
 
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
 public static class EditorSettings{
     private const string ShortcutFile = "shortcuts.json";
     public static string IndentString { get; private set; } = new string(' ', 4);
     public static KeyGesture IndentGesture { get; private set; } = new KeyGesture(Key.Tab);
     public static KeyGesture UnindentGesture { get; private set; } = new KeyGesture(Key.Tab, ModifierKeys.Shift);
-    public static bool ShowLineNumbers { get; private set; } = true;
+    private static bool showLineNumbers = true;
+    public static bool ShowLineNumbers {
+        get => showLineNumbers;
+        private set {
+            if(showLineNumbers != value){
+                showLineNumbers = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+    public static event PropertyChangedEventHandler? PropertyChanged;
     public static event EventHandler? Changed;
 
     static EditorSettings(){
@@ -57,6 +70,11 @@ public static class EditorSettings{
             UnindentShortcut = new KeyGestureConverter().ConvertToString(UnindentGesture)!
         };
         File.WriteAllText(ShortcutFile, JsonSerializer.Serialize(conf));
+    }
+
+    private static void OnPropertyChanged([CallerMemberName] string? name = null)
+    {
+        PropertyChanged?.Invoke(null, new PropertyChangedEventArgs(name));
     }
 
     private class ShortcutConfig{

@@ -9,11 +9,12 @@ using ViewModels;
 using Services;
 
 namespace Controls{
-    public partial class TextEdit : UserControl{
-        private ListBox lineList => LinesList;
+    public partial class TextEdit : UserControl {
+        // List displaying the editor lines
+        private ListBox lineList => Editor;
         public event EventHandler<int>? LineControlRequested;
         private bool internalChange = false;
-        private readonly ObservableCollection<TextLine> lines = new ObservableCollection<TextLine>();
+        private readonly ObservableCollection<TextLine> lines = new();
 
         public ObservableCollection<TextLine> Lines => lines;
 
@@ -25,18 +26,12 @@ namespace Controls{
         }
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e) {
-            if (e.NewValue is TextEditorViewModel vm) {
-                Lines.Clear();
-                string[] raw = vm.Text.Replace("\r\n", "\n").Split('\n');
-                for (int i = 0; i < raw.Length; i++) {
-                    Lines.Add(new TextLine { LineNumber = i + 1, Text = raw[i] });
-                }
+            if (e.OldValue is TextEditorViewModel oldVm)
+                oldVm.PropertyChanged -= OnVmPropertyChanged;
 
-                vm.PropertyChanged += (s, evt) => {
-                    if (evt.PropertyName == nameof(TextEditorViewModel.Text)) {
-                        // Optional: Update UI when VM changes from outside
-                    }
-                };
+            if (e.NewValue is TextEditorViewModel vm) {
+                SetText(vm.Text);
+                vm.PropertyChanged += OnVmPropertyChanged;
             }
         }
 
@@ -48,13 +43,27 @@ namespace Controls{
 
         private void SetText(string text){
             internalChange = true;
+            foreach(var l in lines)
+                l.PropertyChanged -= OnLineChanged;
+
             lines.Clear();
+
             string[] raw = text.Replace("\r\n", "\n").Split('\n');
             int num = 1;
             foreach(string l in raw){
-                lines.Add(new TextLine{ LineNumber = num++, Text = l });
+                var tl = new TextLine { LineNumber = num++, Text = l };
+                tl.PropertyChanged += OnLineChanged;
+                lines.Add(tl);
             }
             internalChange = false;
+        }
+
+        private void OnLineChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == nameof(TextLine.Text))
+            {
+                UpdateVmText();
+            }
         }
 
         private void UpdateVmText(){
@@ -84,10 +93,13 @@ namespace Controls{
         }
 
         public (IList<TextLine> Lines, int StartLine, int EndLine) GetSelectedLineRange(){
-            int startChar = editorBox.SelectionStart;
-            int endChar = startChar + editorBox.SelectionLength;
-            int start = editorBox.GetLineIndexFromCharacterIndex(startChar);
-            int end = editorBox.GetLineIndexFromCharacterIndex(endChar);
+            if (lineList.SelectedItems.Count == 0) {
+                return (lines, lineList.SelectedIndex, lineList.SelectedIndex);
+            }
+
+            int start = lineList.Items.IndexOf(lineList.SelectedItems[0]);
+            int end = lineList.Items.IndexOf(lineList.SelectedItems[^1]);
+            if (start > end) (start, end) = (end, start);
             return (lines, start, end);
         }
 
@@ -101,7 +113,7 @@ namespace Controls{
         }
 
         private void UpdateLineVisibility(){
-            lineList.Visibility = EditorSettings.ShowLineNumbers ? Visibility.Visible : Visibility.Collapsed;
+            lineList.Items.Refresh();
         }
     }
 }
