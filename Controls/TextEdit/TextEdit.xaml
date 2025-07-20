@@ -8,7 +8,10 @@
                  BorderThickness="0"
                  ItemsSource="{Binding Lines, RelativeSource={RelativeSource AncestorType=UserControl}}"
                  SelectionMode="Extended"
-                 Background="White">
+                 HorizontalAlignment="Stretch"
+                 Background="White"
+                 HorizontalContentAlignment="Stretch"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid>
@@ -32,7 +35,9 @@
                                  PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"
                                  PreviewKeyDown="OnTextBoxPreviewKeyDown"
                                  DataObject.Pasting="OnTextBoxPasting"
-                                 VerticalAlignment="Center"/>
+                                 VerticalAlignment="Center"
+                                 HorizontalAlignment="Stretch"
+                                 Margin="0"/>
                     </Grid>
                     <DataTemplate.Triggers>
                         <DataTrigger Binding="{Binding Source={x:Static localSettings:EditorSettings.ShowLineNumbers}}" Value="False">
