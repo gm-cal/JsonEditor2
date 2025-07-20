@@ -105,7 +105,7 @@ namespace Controls{
 
         private void OnLineNumberMouseDown(object sender, MouseButtonEventArgs e){
             if((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control){
-                if(sender is ListBoxItem item && item.DataContext is TextLine line){
+                if(sender is FrameworkElement element && element.DataContext is TextLine line){
                     LineControlRequested?.Invoke(this, line.LineNumber);
                     e.Handled = true;
                 }
