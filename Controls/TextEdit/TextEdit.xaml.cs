@@ -17,8 +17,7 @@ namespace Controls{
         private readonly Stack<string> redoStack = new Stack<string>();
         private string lastText = string.Empty;
         private bool internalChange = false;
-        private readonly ObservableCollection<TextLine> lines = new();
-        private bool internalChange = false;
+        private readonly ObservableCollection<TextLine> lines = new ObservableCollection<TextLine>();
 
         public ObservableCollection<TextLine> Lines => lines;
 
@@ -97,26 +96,6 @@ namespace Controls{
 
         private void UpdateLineVisibility(){
             lineList.Visibility = EditorSettings.ShowLineNumbers ? Visibility.Visible : Visibility.Collapsed;
-        }
-
-        // ctrl-click on a line number triggers external control handling
-        private void OnLineNumberMouseDown(object sender, MouseButtonEventArgs e){
-            if((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control){
-                if(sender is ListBoxItem item && item.DataContext is TextLine line){
-                    LineControlRequested?.Invoke(this, line.LineNumber);
-                    e.Handled = true;
-                }
-            }
-        }
-
-        // ctrl-click on a line number triggers external control handling
-        private void OnLineNumberMouseDown(object sender, MouseButtonEventArgs e){
-            if((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control){
-                if(sender is ListBoxItem item && item.DataContext is TextLine line){
-                    LineControlRequested?.Invoke(this, line.LineNumber);
-                    e.Handled = true;
-                }
-            }
         }
     }
 }
