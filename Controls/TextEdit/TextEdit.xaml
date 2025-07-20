@@ -16,7 +16,14 @@
                  Background="#FFEEEEEE"
                  BorderThickness="0"
                  SelectionMode="Extended"
-                 SelectionChanged="OnLineNumberSelection"/>
+                 ItemsSource="{Binding Lines, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                 SelectionChanged="OnLineNumberSelection">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding LineNumber}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
         <TextBox Name="Editor"
                  Grid.Column="1"
                  FontFamily="MS Gothic"
