@@ -7,6 +7,12 @@ namespace Services{
     public static class IndentService{
         // 選択された行をインデントまたはインデント解除します。
         // Tab入力はEditorSettings.IndentStringで定義されたスペースに置き換えられます。
+        public static void Indent(IList<TextLine> lines, int startLine, int endLine) =>
+            ModifySelection(lines, startLine, endLine, true);
+
+        public static void Unindent(IList<TextLine> lines, int startLine, int endLine) =>
+            ModifySelection(lines, startLine, endLine, false);
+
         public static void ModifySelection(IList<TextLine> lines, int startLine, int endLine, bool indent){
             string indentStr = EditorSettings.IndentString;
 

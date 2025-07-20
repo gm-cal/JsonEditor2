@@ -11,6 +11,10 @@
                  HorizontalAlignment="Stretch"
                  Background="White"
                  HorizontalContentAlignment="Stretch"
+                 PreviewKeyDown="OnEditorPreviewKeyDown"
+                 PreviewMouseLeftButtonDown="OnEditorPreviewMouseLeftButtonDown"
+                 PreviewMouseLeftButtonUp="OnEditorPreviewMouseLeftButtonUp"
+                 MouseMove="OnEditorMouseMove"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.ItemTemplate>
                 <DataTemplate>
