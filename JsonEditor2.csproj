@@ -10,4 +10,8 @@
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Resource Include="Resources/Icons/*.png" />
+  </ItemGroup>
+
 </Project>
