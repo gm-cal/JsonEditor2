@@ -29,12 +29,12 @@
                                  AcceptsReturn="False"
                                  AcceptsTab="True"
                                  VerticalAlignment="Center"/>
-                        <Grid.Triggers>
-                            <DataTrigger Binding="{Binding Source={x:Static localSettings:EditorSettings.ShowLineNumbers}}" Value="False">
-                                <Setter TargetName="LineNumberBlock" Property="Visibility" Value="Collapsed"/>
-                            </DataTrigger>
-                        </Grid.Triggers>
                     </Grid>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Source={x:Static localSettings:EditorSettings.ShowLineNumbers}}" Value="False">
+                            <Setter TargetName="LineNumberBlock" Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
