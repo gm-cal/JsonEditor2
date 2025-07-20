@@ -13,9 +13,22 @@ namespace Services{
             try{
                 JsonNode root = JsonNode.Parse(input)!;
                 Rename(root, converter);
-                JsonSerializerOptions options = new JsonSerializerOptions{ WriteIndented = true };
+
+                JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
                 string raw = JsonSerializer.Serialize(root, options);
-                result = AdjustIndent(raw, indentWidth);
+
+                // 出力後の整形
+                string[] originalLines = input.Split('\n');
+                string[] convertedLines = AdjustIndent(raw, indentWidth).Split('\n');
+
+                // 構造だけの行を変換前から差し戻す
+                for(int i = 0; i < convertedLines.Length && i < originalLines.Length; i++){
+                    if(IsStructureLine(convertedLines[i])){
+                        convertedLines[i] = originalLines[i];
+                    }
+                }
+
+                result = string.Join("\n", convertedLines);
                 return true;
             }catch(JsonException ex){
                 error = $"Line {ex.LineNumber}, Position {ex.BytePositionInLine}: {ex.Message}";
@@ -25,6 +38,7 @@ namespace Services{
                 return false;
             }
         }
+
         private static void Rename(JsonNode? node, Func<string, string> converter){
             if(node is JsonObject obj){
                 List<KeyValuePair<string, JsonNode?>> props = obj.ToList();

@@ -9,7 +9,12 @@ namespace Services{
 
         private static string ToUpperCamel(string name){
             if(string.IsNullOrEmpty(name)) return name;
-            string[] parts = name.Split('_', StringSplitOptions.RemoveEmptyEntries);
+
+            int splitIndex = name.IndexOfAny(new char[]{' ', '\t'});
+            string head = splitIndex >= 0 ? name.Substring(0, splitIndex) : name;
+            string tail = splitIndex >= 0 ? name.Substring(splitIndex) : string.Empty;
+
+            string[] parts = head.Split('_', StringSplitOptions.RemoveEmptyEntries);
             if(parts.Length == 0) return name;
 
             StringBuilder sb = new StringBuilder();
@@ -21,6 +26,8 @@ namespace Services{
                     if(part.Length > 1) sb.Append(part.Substring(1).ToLowerInvariant());
                 }
             }
+
+            sb.Append(tail);
             return sb.ToString();
         }
     }

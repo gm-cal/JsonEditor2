@@ -8,9 +8,14 @@ namespace Services{
         }
         private static string ToSnakeCase(string name){
             if(string.IsNullOrEmpty(name)) return name;
+
+            int splitIndex = name.IndexOfAny(new char[]{' ', '\t'});
+            string head = splitIndex >= 0 ? name.Substring(0, splitIndex) : name;
+            string tail = splitIndex >= 0 ? name.Substring(splitIndex) : string.Empty;
+
             StringBuilder sb = new StringBuilder();
-            for(int i = 0; i < name.Length; i++){
-                char c = name[i];
+            for(int i = 0; i < head.Length; i++){
+                char c = head[i];
                 if(char.IsUpper(c)){
                     if(i > 0) sb.Append('_');
                     sb.Append(char.ToLowerInvariant(c));
@@ -18,6 +23,7 @@ namespace Services{
                     sb.Append(c);
                 }
             }
+            sb.Append(tail);
             return sb.ToString();
         }
     }
