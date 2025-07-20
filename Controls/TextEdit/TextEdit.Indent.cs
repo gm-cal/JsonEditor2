@@ -8,16 +8,19 @@ using Services;
 namespace Controls{
     public partial class TextEdit{
         public void IndentSelection(){
-            ModifySelection(true);
+            ApplyIndent(true);
         }
 
         public void UnindentSelection(){
-            ModifySelection(false);
+            ApplyIndent(false);
         }
 
-        private void ModifySelection(bool indent){
+        private void ApplyIndent(bool indent){
             (IList<TextLine> currentLines, int start, int end) = SelectionService.GetSelectedLineRange(lines, lineList.SelectedItems, lineList.SelectedIndex);
-            IndentService.ModifySelection(currentLines, start, end, indent);
+            if(indent)
+                IndentService.Indent(currentLines, start, end);
+            else
+                IndentService.Unindent(currentLines, start, end);
             Renumber();
             ScheduleVmUpdate();
         }
