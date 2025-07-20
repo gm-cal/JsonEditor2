@@ -108,5 +108,15 @@ namespace Controls{
                 }
             }
         }
+
+        // ctrl-click on a line number triggers external control handling
+        private void OnLineNumberMouseDown(object sender, MouseButtonEventArgs e){
+            if((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control){
+                if(sender is ListBoxItem item && item.DataContext is TextLine line){
+                    LineControlRequested?.Invoke(this, line.LineNumber);
+                    e.Handled = true;
+                }
+            }
+        }
     }
 }
