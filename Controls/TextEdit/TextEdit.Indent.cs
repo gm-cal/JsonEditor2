@@ -13,7 +13,7 @@ namespace Controls{
         }
 
         private void ModifySelection(bool indent){
-            var (currentLines, start, end) = GetSelectedLineRange();
+            var (currentLines, start, end) = SelectionService.GetSelectedLineRange(lines, lineList.SelectedItems, lineList.SelectedIndex);
             IndentService.ModifySelection(currentLines, start, end, indent);
             Renumber();
             ScheduleVmUpdate();
@@ -25,13 +25,7 @@ namespace Controls{
         }
 
         public (IList<TextLine> Lines, int StartLine, int EndLine) GetSelectedLineRange(){
-            if(lineList.SelectedItems.Count == 0)
-                return (lines, lineList.SelectedIndex, lineList.SelectedIndex);
-
-            int start = lineList.Items.IndexOf(lineList.SelectedItems[0]);
-            int end = lineList.Items.IndexOf(lineList.SelectedItems[^1]);
-            if(start > end) (start, end) = (end, start);
-            return (lines, start, end);
+            return SelectionService.GetSelectedLineRange(lines, lineList.SelectedItems, lineList.SelectedIndex);
         }
     }
 }
