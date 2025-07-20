@@ -15,7 +15,7 @@ namespace Controls{
         private readonly Stack<string> redoStack = new Stack<string>();
         private string lastText = string.Empty;
         private bool internalChange = false;
-        private readonly List<TextLine> lines = new();
+        private readonly List<TextLine> lines = new List<TextLine>();
 
         public TextEdit(){
             InitializeComponent();

@@ -9,6 +9,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+        
         <ListBox x:Name="LineNumbers"
                  Width="20"
                  FontFamily="MS Gothic"
