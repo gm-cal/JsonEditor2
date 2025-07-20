@@ -45,7 +45,6 @@ namespace Controls{
         private void TextBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e){
             if(sender is TextBox tb && !tb.IsKeyboardFocusWithin){
                 tb.Focus();
-                e.Handled = true;
             }
         }
 
