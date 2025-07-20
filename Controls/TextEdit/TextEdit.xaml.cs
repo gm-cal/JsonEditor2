@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,16 +18,46 @@ namespace Controls{
         private string lastText = string.Empty;
         private bool internalChange = false;
         private readonly ObservableCollection<TextLine> lines = new();
+        private bool internalChange = false;
 
         public ObservableCollection<TextLine> Lines => lines;
 
         public TextEdit(){
             InitializeComponent();
-            editorControl.PreviewKeyDown += OnPreviewKeyDown;
-            editorControl.TextChanged += OnTextChanged;
-            EditorSettings.Changed += (_, _) => UpdateLineNumberVisibility();
-            UpdateLineData();
-            UpdateLineNumbers();
+            DataContextChanged += OnDataContextChanged;
+            EditorSettings.Changed += (_, _) => UpdateLineVisibility();
+        }
+
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e){
+            if(e.OldValue is TextEditorViewModel oldVm) oldVm.PropertyChanged -= OnVmPropertyChanged;
+            if(e.NewValue is TextEditorViewModel vm){
+                vm.PropertyChanged += OnVmPropertyChanged;
+                SetText(vm.Text);
+            }
+        }
+
+        private void OnVmPropertyChanged(object? sender, PropertyChangedEventArgs e){
+            if(e.PropertyName == nameof(TextEditorViewModel.Text) && sender is TextEditorViewModel vm){
+                SetText(vm.Text);
+            }
+        }
+
+        private void SetText(string text){
+            internalChange = true;
+            lines.Clear();
+            string[] raw = text.Replace("\r\n", "\n").Split('\n');
+            int num = 1;
+            foreach(string l in raw){
+                lines.Add(new TextLine{ LineNumber = num++, Text = l });
+            }
+            internalChange = false;
+        }
+
+        private void UpdateVmText(){
+            if(internalChange) return;
+            if(DataContext is TextEditorViewModel vm){
+                vm.Text = string.Join(Environment.NewLine, lines.Select(l => l.Text));
+            }
         }
 
         public void IndentSelection(){
@@ -38,118 +68,45 @@ namespace Controls{
             ModifySelection(false);
         }
 
-        private void OnPreviewKeyDown(object sender, KeyEventArgs e){
-            if(EditorSettings.IndentGesture.Matches(null, e)){
-                IndentSelection();
-                e.Handled = true;
-            }else if(EditorSettings.UnindentGesture.Matches(null, e)){
-                UnindentSelection();
-                e.Handled = true;
-            }else if(e.Key == Key.Z && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control){
-                Undo();
-                e.Handled = true;
-            }else if(e.Key == Key.Y && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control){
-                Redo();
-                e.Handled = true;
-            }
-        }
-
         private void ModifySelection(bool indent){
-            PushUndo();
-            internalChange = true;
             var (currentLines, start, end) = GetSelectedLineRange();
             IndentService.ModifySelection(currentLines, start, end, indent);
-            editorControl.Text = string.Join(Environment.NewLine, currentLines.Select(l => l.Text));
-            editorControl.SelectionStart = editorControl.GetCharacterIndexFromLineIndex(start);
-            editorControl.SelectionLength = Math.Max(0, editorControl.GetCharacterIndexFromLineIndex(end) + currentLines[end].Text.Length - editorControl.SelectionStart);
-            internalChange = false;
-            UpdateLineNumbers();
+            Renumber();
+            UpdateVmText();
         }
 
-        private void OnDrop(object sender, DragEventArgs e){
-            if(DataContext is TextEditorViewModel vm){
-                if(e.Data.GetDataPresent(DataFormats.FileDrop)){
-                    string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                    if(files.Length > 0){
-                        vm.FilePath = files[0];
-                        vm.OpenCommand.Execute(null);
-                    }
+        private void Renumber(){
+            for(int i = 0; i < lines.Count; i++) lines[i].LineNumber = i + 1;
+        }
+
+        public (IList<TextLine> Lines, int StartLine, int EndLine) GetSelectedLineRange(){
+            int start = lineList.SelectedIndex;
+            int end = start + lineList.SelectedItems.Count - 1;
+            if(start < 0) start = end = 0;
+            return (lines, start, end);
+        }
+
+        private void OnLineNumberMouseDown(object sender, MouseButtonEventArgs e){
+            if((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control){
+                if(sender is ListBoxItem item && item.DataContext is TextLine line){
+                    LineControlRequested?.Invoke(this, line.LineNumber);
+                    e.Handled = true;
                 }
             }
         }
 
-        private void OnTextChanged(object sender, TextChangedEventArgs e){
-            if(!internalChange){
-                undoStack.Push(lastText);
-                redoStack.Clear();
+        private void UpdateLineVisibility(){
+            lineList.Visibility = EditorSettings.ShowLineNumbers ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        // ctrl-click on a line number triggers external control handling
+        private void OnLineNumberMouseDown(object sender, MouseButtonEventArgs e){
+            if((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control){
+                if(sender is ListBoxItem item && item.DataContext is TextLine line){
+                    LineControlRequested?.Invoke(this, line.LineNumber);
+                    e.Handled = true;
+                }
             }
-            lastText = editorControl.Text;
-            UpdateLineData();
-            UpdateLineNumbers();
-        }
-
-        private void PushUndo(){
-            undoStack.Push(editorControl.Text);
-            redoStack.Clear();
-        }
-
-        private void Undo(){
-            if(undoStack.Count > 0){
-                internalChange = true;
-                string current = editorControl.Text;
-                string prev = undoStack.Pop();
-                redoStack.Push(current);
-                editorControl.Text = prev;
-                internalChange = false;
-                UpdateLineNumbers();
-            }
-        }
-
-        private void Redo(){
-            if(redoStack.Count > 0){
-                internalChange = true;
-                string current = editorControl.Text;
-                string next = redoStack.Pop();
-                undoStack.Push(current);
-                editorControl.Text = next;
-                internalChange = false;
-                UpdateLineNumbers();
-            }
-        }
-
-        private void UpdateLineNumbers(){
-            lineNumbers.ItemsSource = lines;
-            UpdateLineNumberVisibility();
-        }
-
-        private void UpdateLineNumberVisibility(){
-            lineNumbers.Visibility = EditorSettings.ShowLineNumbers ? Visibility.Visible : Visibility.Collapsed;
-        }
-
-        private void UpdateLineData(){
-            lines.Clear();
-            string[] rawLines = editorControl.Text.Replace("\r\n", "\n").Split('\n');
-            int num = 1;
-            foreach(string l in rawLines){
-                lines.Add(new TextLine{ LineNumber = num++, Text = l });
-            }
-        }
-
-        public (IList<TextLine> Lines, int StartLine, int EndLine) GetSelectedLineRange(){
-            int startLine = editorControl.GetLineIndexFromCharacterIndex(editorControl.SelectionStart);
-            int endLine = editorControl.GetLineIndexFromCharacterIndex(editorControl.SelectionStart + editorControl.SelectionLength);
-            return (lines, startLine, endLine);
-        }
-
-        private void OnLineNumberSelection(object sender, SelectionChangedEventArgs e){
-            if(lineNumbers.SelectedItems.Count == 0) return;
-            int start = lineNumbers.SelectedIndex;
-            int end = start + lineNumbers.SelectedItems.Count - 1;
-            if(start < 0) return;
-            int startPos = editorControl.GetCharacterIndexFromLineIndex(start);
-            int endPos = editorControl.GetCharacterIndexFromLineIndex(end) + editorControl.GetLineLength(end);
-            editorControl.SelectionStart = startPos;
-            editorControl.SelectionLength = Math.Max(0, endPos - startPos);
         }
 
         // ctrl-click on a line number triggers external control handling
