@@ -11,7 +11,6 @@ using Services;
 namespace Controls{
     public partial class TextEdit : UserControl{
         private ListBox lineList => LinesList;
-        private TextBox editorBox => EditorBox;
         public event EventHandler<int>? LineControlRequested;
         private bool internalChange = false;
         private readonly ObservableCollection<TextLine> lines = new ObservableCollection<TextLine>();
@@ -25,11 +24,19 @@ namespace Controls{
             UpdateLineVisibility();
         }
 
-        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e){
-            if(e.OldValue is TextEditorViewModel oldVm) oldVm.PropertyChanged -= OnVmPropertyChanged;
-            if(e.NewValue is TextEditorViewModel vm){
-                vm.PropertyChanged += OnVmPropertyChanged;
-                SetText(vm.Text);
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e) {
+            if (e.NewValue is TextEditorViewModel vm) {
+                Lines.Clear();
+                string[] raw = vm.Text.Replace("\r\n", "\n").Split('\n');
+                for (int i = 0; i < raw.Length; i++) {
+                    Lines.Add(new TextLine { LineNumber = i + 1, Text = raw[i] });
+                }
+
+                vm.PropertyChanged += (s, evt) => {
+                    if (evt.PropertyName == nameof(TextEditorViewModel.Text)) {
+                        // Optional: Update UI when VM changes from outside
+                    }
+                };
             }
         }
 
