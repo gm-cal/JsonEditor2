@@ -10,12 +10,8 @@ using Services;
 
 namespace Controls{
     public partial class TextEdit : UserControl{
-        private TextBox editorControl => Editor;
-        private ListBox lineNumbers => LineNumbers;
+        private ListBox lineList => LinesList;
         public event EventHandler<int>? LineControlRequested;
-        private readonly Stack<string> undoStack = new Stack<string>();
-        private readonly Stack<string> redoStack = new Stack<string>();
-        private string lastText = string.Empty;
         private bool internalChange = false;
         private readonly ObservableCollection<TextLine> lines = new ObservableCollection<TextLine>();
 
