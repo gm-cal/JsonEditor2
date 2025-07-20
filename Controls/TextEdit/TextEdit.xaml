@@ -29,6 +29,7 @@
                                  Background="Transparent"
                                  AcceptsReturn="False"
                                  AcceptsTab="True"
+                                 PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"
                                  PreviewKeyDown="OnTextBoxPreviewKeyDown"
                                  DataObject.Pasting="OnTextBoxPasting"
                                  VerticalAlignment="Center"/>
