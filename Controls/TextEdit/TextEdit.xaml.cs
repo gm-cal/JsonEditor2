@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,7 +16,9 @@ namespace Controls{
         private readonly Stack<string> redoStack = new Stack<string>();
         private string lastText = string.Empty;
         private bool internalChange = false;
-        private readonly List<TextLine> lines = new List<TextLine>();
+        private readonly ObservableCollection<TextLine> lines = new();
+
+        public ObservableCollection<TextLine> Lines => lines;
 
         public TextEdit(){
             InitializeComponent();
@@ -114,10 +117,7 @@ namespace Controls{
         }
 
         private void UpdateLineNumbers(){
-            int count = lines.Count;
-            List<string> nums = new();
-            for(int i = 1; i <= count; i++) nums.Add(i.ToString());
-            lineNumbers.ItemsSource = nums;
+            lineNumbers.ItemsSource = lines;
             UpdateLineNumberVisibility();
         }
 
@@ -128,12 +128,13 @@ namespace Controls{
         private void UpdateLineData(){
             lines.Clear();
             string[] rawLines = editorControl.Text.Replace("\r\n", "\n").Split('\n');
+            int num = 1;
             foreach(string l in rawLines){
-                lines.Add(new TextLine{ Text = l });
+                lines.Add(new TextLine{ LineNumber = num++, Text = l });
             }
         }
 
-        public (List<TextLine> Lines, int StartLine, int EndLine) GetSelectedLineRange(){
+        public (IList<TextLine> Lines, int StartLine, int EndLine) GetSelectedLineRange(){
             int startLine = editorControl.GetLineIndexFromCharacterIndex(editorControl.SelectionStart);
             int endLine = editorControl.GetLineIndexFromCharacterIndex(editorControl.SelectionStart + editorControl.SelectionLength);
             return (lines, startLine, endLine);
