@@ -5,9 +5,9 @@ using ViewModels;
 using Views;
 
 public partial class MainWindow : Window{
-    public MainWindow(IFileService fileService, IJsonService jsonService){
+    public MainWindow(IFileService fileService, IJsonService jsonService, IIndentService indentService){
         InitializeComponent();
-        DataContext = new MainViewModel(fileService, jsonService);
+        DataContext = new MainViewModel(fileService, jsonService, indentService);
     }
 
     private TabControls tabsControl => TabsControl;
