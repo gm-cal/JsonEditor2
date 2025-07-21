@@ -11,7 +11,7 @@ namespace ViewModels{
     public class TextEditorViewModel : INotifyPropertyChanged{
         private readonly IFileService fileService;
         private readonly IJsonService jsonService;
-        private readonly IIndentService indentService;
+        private readonly ITextService textService;
         private string text = string.Empty;
         private string filePath = string.Empty;
         private string status = string.Empty;
@@ -19,15 +19,15 @@ namespace ViewModels{
         private string title = string.Empty;
         private static int newFileCounter = 1;
 
-        public IIndentService IndentService => indentService;
+        public ITextService TextService => textService;
 
         // --- コンストラクタ。依存サービスを受け取り、コマンドを初期化します。
         // fileService  ファイル操作サービス
         // jsonService  JSON操作サービス
-        public TextEditorViewModel(IFileService fileService, IJsonService jsonService, IIndentService indentService){
+        public TextEditorViewModel(IFileService fileService, IJsonService jsonService, ITextService textService){
             this.fileService = fileService;
             this.jsonService = jsonService;
-            this.indentService = indentService;
+            this.textService = textService;
             ConvertCommand = new RelayCommand(_ => Convert());
             FormatCommand = new RelayCommand(_ => Format());
             ToUpperCamelCommand = new RelayCommand(_ => ToUpperCamel());

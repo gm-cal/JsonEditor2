@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Services{
@@ -20,7 +19,7 @@ namespace Services{
                 Regex jsonLine = new("^\"\\s*([^\"\\s]+)\\s*\"\\s*:\\s*\"(.*)\"$", RegexOptions.Compiled);
                 bool allJson = lines.All(l => jsonLine.IsMatch(l.Trim()));
 
-                List<string> resultLines = new();
+                List<string> resultLines = new List<string>();
                 if(allJson){
                     foreach(string line in lines){
                         Match m = jsonLine.Match(line.Trim());

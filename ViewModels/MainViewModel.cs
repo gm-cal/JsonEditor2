@@ -13,12 +13,12 @@ namespace ViewModels{
         public ICommand CloseTabCommand{ get; }
         private readonly IFileService fileService;
         private readonly IJsonService jsonService;
-        private readonly IIndentService indentService;
+        private readonly ITextService textService;
 
-        public MainViewModel(IFileService fileService, IJsonService jsonService, IIndentService indentService){
+        public MainViewModel(IFileService fileService, IJsonService jsonService, ITextService textService){
             this.fileService = fileService;
             this.jsonService = jsonService;
-            this.indentService = indentService;
+            this.textService = textService;
             Editors = new ObservableCollection<TextEditorViewModel>();
             NewTabCommand = new RelayCommand(_ => AddTab());
             CloseTabCommand = new RelayCommand(e => RemoveTab(e as TextEditorViewModel), e => e is TextEditorViewModel);
@@ -31,7 +31,7 @@ namespace ViewModels{
         }
 
         private void AddTab(){
-            TextEditorViewModel editor = new TextEditorViewModel(fileService, jsonService, indentService);
+            TextEditorViewModel editor = new TextEditorViewModel(fileService, jsonService, textService);
             Editors.Add(editor);
             SelectedEditor = editor;
         }

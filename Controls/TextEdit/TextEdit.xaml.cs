@@ -18,7 +18,7 @@ namespace Controls{
         private bool internalChange = false;
         private ScrollViewer? editorScroll;
         private ScrollViewer? lineScroll;
-        public IIndentService? IndentService{ get; set; }
+        public ITextService? textService{ get; set; }
 
         public TextEdit(){
             InitializeComponent();
@@ -56,7 +56,7 @@ namespace Controls{
         private void ModifySelection(bool indent){
             PushUndo();
             internalChange = true;
-            IndentService?.ModifySelection(editorControl, indent);
+            textService?.ModifySelection(editorControl.Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None), indent, out string[] modifiedLines);
             internalChange = false;
             UpdateLineNumbers();
         }
