@@ -156,7 +156,9 @@ namespace Controls{
                 double height = r1.Top > r0.Top ? r1.Top - r0.Top : r0.Height;
                 Style style = new(typeof(ListBoxItem));
                 style.Setters.Add(new Setter(ListBoxItem.HeightProperty, height));
+                style.Setters.Add(new Setter(ListBoxItem.MarginProperty, new Thickness(0)));
                 lineNumbers.ItemContainerStyle = style;
+                lineNumbers.Margin = new Thickness(0, r0.Top, 0, 0);
             }), DispatcherPriority.Loaded);
         }
 
