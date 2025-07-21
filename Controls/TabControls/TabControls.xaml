@@ -20,11 +20,11 @@
                 <DataTemplate DataType="{x:Type viewModels:TextEditorViewModel}">
                     <DockPanel LastChildFill="False">
                         <TextBlock Text="{Binding Title}" Margin="0,0,5,0"/>
-                        <Button Content="x"
-                                Width="16" Height="16"
-                                Padding="0" Margin="5,0,0,0"
+                        <Button Width="16" Height="16" Padding="0" Margin="5,0,0,0"
                                 Command="{Binding DataContext.CloseTabCommand, RelativeSource={RelativeSource AncestorType=local:TabControls}}"
-                                CommandParameter="{Binding}"/>
+                                CommandParameter="{Binding}">
+                            <Image Source="Resources/Icons/close.png" Width="16" Height="16"/>
+                        </Button>
                     </DockPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>
