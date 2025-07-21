@@ -12,6 +12,7 @@
         <ListBox x:Name="LineNumbers"
                  Width="20"
                  FontFamily="MS Gothic"
+                 FontSize="8"
                  Background="#FFEEEEEE"
                  BorderThickness="0"
                  ScrollViewer.VerticalScrollBarVisibility="Hidden"

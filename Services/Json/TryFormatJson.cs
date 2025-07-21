@@ -12,19 +12,31 @@ namespace Services{
         // error        エラーメッセージ
         // 戻り値       整形に成功した場合はtrue、失敗した場合はfalse
         public bool TryFormatJson(string input, int indentWidth, out string formatted, out string error){
-            error = string.Empty;
-            formatted = string.Empty;
             try{
-                using JsonDocument doc = JsonDocument.Parse(input);
+                Dictionary<string, string> dict = new Dictionary<string, string>();
+                string[] lines = input.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach(string line in lines){
+                    string[] parts = line.Split(new char[]{'\t', ' '}, 2, StringSplitOptions.RemoveEmptyEntries);
+                    if(parts.Length < 2){
+                        error = $"Invalid line: {line}";
+                        throw new JsonException($"Invalid line: {line}");
+                    }
+                    dict[parts[0]] = parts[1];
+                    
+                }
                 JsonSerializerOptions options = new JsonSerializerOptions{ WriteIndented = true };
-                string raw = JsonSerializer.Serialize(doc.RootElement, options);
+                string raw = JsonSerializer.Serialize(dict, options);
                 formatted = AdjustIndent(raw, indentWidth);
+                error = string.Empty;
                 return true;
+
             }catch(JsonException ex){
                 error = $"Line {ex.LineNumber}, Position {ex.BytePositionInLine}: {ex.Message}";
+                formatted = input;
                 return false;
             }catch(Exception ex){
                 error = ex.Message;
+                formatted = input;
                 return false;
             }
         }
