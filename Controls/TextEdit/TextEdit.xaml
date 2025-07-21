@@ -14,6 +14,7 @@
                  FontFamily="MS Gothic"
                  Background="#FFEEEEEE"
                  BorderThickness="0"
+                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
                  SelectionMode="Extended"
                  SelectionChanged="OnLineNumberSelection"/>
         <TextBox Name="Editor"

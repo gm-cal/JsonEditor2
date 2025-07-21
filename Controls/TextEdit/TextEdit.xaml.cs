@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Threading;
 using System.Windows.Input;
 using ViewModels;
 using Services;
@@ -14,12 +16,15 @@ namespace Controls{
         private readonly Stack<string> redoStack = new Stack<string>();
         private string lastText = string.Empty;
         private bool internalChange = false;
+        private ScrollViewer? editorScroll;
+        private ScrollViewer? lineScroll;
 
         public TextEdit(){
             InitializeComponent();
             editorControl.PreviewKeyDown += OnPreviewKeyDown;
             editorControl.TextChanged += OnTextChanged;
             EditorSettings.Changed += (_, _) => UpdateLineNumberVisibility();
+            Loaded += (_, _) => InitializeScrolling();
             UpdateLineNumbers();
         }
 
@@ -111,6 +116,7 @@ namespace Controls{
             for(int i = 1; i <= count; i++) nums.Add(i.ToString());
             lineNumbers.ItemsSource = nums;
             UpdateLineNumberVisibility();
+            AdjustLineHeights();
         }
 
         private void UpdateLineNumberVisibility(){
@@ -126,6 +132,41 @@ namespace Controls{
             int endPos = editorControl.GetCharacterIndexFromLineIndex(end) + editorControl.GetLineLength(end);
             editorControl.SelectionStart = startPos;
             editorControl.SelectionLength = Math.Max(0, endPos - startPos);
+        }
+
+        private void InitializeScrolling(){
+            editorScroll = FindScrollViewer(editorControl);
+            lineScroll = FindScrollViewer(lineNumbers);
+            if(editorScroll != null && lineScroll != null){
+                editorScroll.ScrollChanged += (_, e) => lineScroll.ScrollToVerticalOffset(e.VerticalOffset);
+            }
+            AdjustLineHeights();
+        }
+
+        private void AdjustLineHeights(){
+            Dispatcher.BeginInvoke(new Action(() => {
+                if(editorControl.LineCount == 0) return;
+                int first = editorControl.GetCharacterIndexFromLineIndex(0);
+                Rect r0 = editorControl.GetRectFromCharacterIndex(first);
+                Rect r1 = r0;
+                if(editorControl.LineCount > 1){
+                    int second = editorControl.GetCharacterIndexFromLineIndex(1);
+                    r1 = editorControl.GetRectFromCharacterIndex(second);
+                }
+                double height = r1.Top > r0.Top ? r1.Top - r0.Top : r0.Height;
+                Style style = new(typeof(ListBoxItem));
+                style.Setters.Add(new Setter(ListBoxItem.HeightProperty, height));
+                lineNumbers.ItemContainerStyle = style;
+            }), DispatcherPriority.Loaded);
+        }
+
+        private static ScrollViewer? FindScrollViewer(DependencyObject o){
+            if(o is ScrollViewer sv) return sv;
+            for(int i = 0; i < VisualTreeHelper.GetChildrenCount(o); i++){
+                var result = FindScrollViewer(VisualTreeHelper.GetChild(o, i));
+                if(result != null) return result;
+            }
+            return null;
         }
     }
 }
