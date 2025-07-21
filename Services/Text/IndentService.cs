@@ -5,10 +5,14 @@ using System.Windows.Controls;
 using Utils;
 
 namespace Services{
-    public static class IndentService{
+    public interface IIndentService{
+        void ModifySelection(TextBox editor, bool indent);
+    }
+
+    public partial class IndentService : IIndentService{
         // 選択範囲の項目名と値の間にインデント/逆インデントを適用します。
         // TabはEditorSettings.IndentStringで定義されたスペースに置き換えられます。
-        public static void ModifySelection(TextBox editor, bool indent){
+        public void ModifySelection(TextBox editor, bool indent){
             string text = editor.Text.Replace("\r\n", "\n");
             string[] lines = text.Split('\n');
             int startLine = editor.GetLineIndexFromCharacterIndex(editor.SelectionStart);
@@ -47,7 +51,7 @@ namespace Services{
                 lines[lineIndex] = line;
             }
 
-            editor.Text = string.Join(Environment.NewLine, lines);
+            editor.Text = string.Join(Environment.NewLine, lines).Replace("\t", indentStr);
             editor.SelectionStart = editor.GetCharacterIndexFromLineIndex(startLine);
             editor.SelectionLength = Math.Max(0, (editor.GetCharacterIndexFromLineIndex(endLine) + lines[endLine].Length) - editor.SelectionStart + delta);
         }

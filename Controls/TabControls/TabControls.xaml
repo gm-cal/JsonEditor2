@@ -30,7 +30,7 @@
             </TabControl.ItemTemplate>
             <TabControl.ContentTemplate>
                 <DataTemplate DataType="{x:Type viewModels:TextEditorViewModel}">
-                    <local:TextEdit/>
+                    <local:TextEdit IndentService="{Binding IndentService}"/>
                 </DataTemplate>
             </TabControl.ContentTemplate>
         </TabControl>
