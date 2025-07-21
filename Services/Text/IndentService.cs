@@ -39,7 +39,7 @@ namespace Services{
 
                 if(indent){
                     if(measures[i] == minMeasure){
-                        line = line.Insert(keyEnds[i], "\t");
+                        line = line.Insert(keyEnds[i], indentStr);
                         delta += indentStr.Length;
                     }
                 }else{
