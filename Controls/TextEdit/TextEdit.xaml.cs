@@ -18,7 +18,13 @@ namespace Controls{
         private bool internalChange = false;
         private ScrollViewer? editorScroll;
         private ScrollViewer? lineScroll;
-        public ITextService? textService{ get; set; }
+        public static readonly DependencyProperty TextServiceProperty =
+            DependencyProperty.Register(nameof(TextService), typeof(ITextService), typeof(TextEdit));
+
+        public ITextService? TextService{
+            get => (ITextService?)GetValue(TextServiceProperty);
+            set => SetValue(TextServiceProperty, value);
+        }
 
         public TextEdit(){
             InitializeComponent();
@@ -56,7 +62,10 @@ namespace Controls{
         private void ModifySelection(bool indent){
             PushUndo();
             internalChange = true;
-            textService?.ModifySelection(editorControl.Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None), indent, out string[] modifiedLines);
+            TextService?.ModifySelection(
+                editorControl.Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None),
+                indent,
+                out string[] modifiedLines);
             internalChange = false;
             UpdateLineNumbers();
         }
