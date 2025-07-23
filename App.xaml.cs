@@ -1,15 +1,33 @@
 using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
 using Services;
 using ViewModels;
 
 public partial class App : Application{
-    private readonly IFileService fileService = new FileService();
-    private readonly IJsonService jsonService = new JsonService();
-//    private readonly ITextService textService = new TextService();
+    public static ServiceProvider Services { get; private set; } = null!;
 
     protected override void OnStartup(StartupEventArgs e){
         base.OnStartup(e);
-        MainWindow window = new MainWindow(fileService, jsonService);
+        ServiceCollection sc = new();
+        ConfigureServices(sc);
+        Services = sc.BuildServiceProvider();
+
+        MainWindow window = Services.GetRequiredService<MainWindow>();
         window.Show();
+    }
+
+    private static void ConfigureServices(IServiceCollection services){
+        services.AddSingleton<IFileService, FileService>();
+        services.AddSingleton<IJsonService, JsonService>();
+        services.AddSingleton<ITextLineInputService, TextLineInputService>();
+
+        services.AddTransient<TextEditorViewModel>();
+        services.AddTransient<MainViewModel>();
+        services.AddTransient<MainWindow>();
+    }
+
+    protected override void OnExit(ExitEventArgs e){
+        Services.Dispose();
+        base.OnExit(e);
     }
 }

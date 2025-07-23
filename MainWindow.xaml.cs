@@ -1,13 +1,12 @@
 using System.Windows;
 using Controls;
-using Services;
 using ViewModels;
 using Views;
 
 public partial class MainWindow : Window{
-    public MainWindow(IFileService fileService, IJsonService jsonService){
+    public MainWindow(MainViewModel vm){
         InitializeComponent();
-        DataContext = new MainViewModel(fileService, jsonService);
+        DataContext = vm;
     }
 
     private TabControls tabsControl => TabsControl;

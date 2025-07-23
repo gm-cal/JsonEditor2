@@ -11,6 +11,7 @@ namespace ViewModels{
     public class TextEditorViewModel : INotifyPropertyChanged{
         private readonly IFileService fileService;  // ファイル操作サービス
         private readonly IJsonService jsonService;  // JSON操作サービス
+        public ITextLineInputService LineService { get; }
         private string text = string.Empty;         // エディタ内のテキスト内容
         private string filePath = string.Empty;     // 編集対象ファイルのパス
         private string status = string.Empty;       // ステータスメッセージ
@@ -21,9 +22,10 @@ namespace ViewModels{
         // --- コンストラクタ。依存サービスを受け取り、コマンドを初期化します。
         // fileService  ファイル操作サービス
         // jsonService  JSON操作サービス
-        public TextEditorViewModel(IFileService fileService, IJsonService jsonService){
+        public TextEditorViewModel(IFileService fileService, IJsonService jsonService, ITextLineInputService lineService){
             this.fileService = fileService;
             this.jsonService = jsonService;
+            LineService = lineService;
             ConvertCommand      = new RelayCommand(_ => Convert());
             FormatCommand       = new RelayCommand(_ => Format());
             ToUpperCamelCommand = new RelayCommand(_ => ToUpperCamel());
