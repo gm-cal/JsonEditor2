@@ -10,6 +10,7 @@ namespace Controls{
         private bool isDragSelecting = false;
         private int dragStartIndex = -1;
 
+        // イベントハンドラを追加して、ドラッグ選択とコピー機能を実装します。
         private void OnEditorPreviewKeyDown(object sender, KeyEventArgs e){
             if((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control){
                 if(e.Key == Key.A){
@@ -22,6 +23,7 @@ namespace Controls{
             }
         }
 
+        // マウス左ボタンが押されたときの処理
         private void OnEditorPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e){
             if((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
                 return;
@@ -38,6 +40,7 @@ namespace Controls{
             }
         }
 
+        // マウスが動いたときの処理
         private void OnEditorMouseMove(object sender, MouseEventArgs e){
             if(isDragSelecting){
                 int index = IndexFromPoint(e.GetPosition(lineList));
@@ -51,6 +54,7 @@ namespace Controls{
             }
         }
 
+        // マウス左ボタンが離されたときの処理
         private void OnEditorPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e){
             if(isDragSelecting){
                 isDragSelecting = false;
@@ -59,6 +63,7 @@ namespace Controls{
             }
         }
 
+        // マウスが離れたときの処理
         private int IndexFromPoint(Point point){
             DependencyObject? element = lineList.InputHitTest(point) as DependencyObject;
             while(element != null && element is not ListBoxItem)
@@ -68,6 +73,7 @@ namespace Controls{
             return -1;
         }
 
+        // 選択された行の範囲を取得します。
         private static TextBox? GetParentTextBox(DependencyObject? obj){
             while(obj != null){
                 if(obj is TextBox tb) return tb;
@@ -76,6 +82,7 @@ namespace Controls{
             return null;
         }
 
+        // 選択された行の範囲を取得します。
         private void CopySelection(){
             (IList<TextLine> lines, int start, int end) = GetSelectedLineRange();
             StringBuilder sb = new();

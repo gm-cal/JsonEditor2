@@ -9,14 +9,14 @@ using Utils;
 namespace ViewModels{
     // テキストエディタのViewModel。ファイル操作やJSON変換・整形などの機能を提供します。
     public class TextEditorViewModel : INotifyPropertyChanged{
-        private readonly IFileService fileService;
-        private readonly IJsonService jsonService;
-        private string text = string.Empty;
-        private string filePath = string.Empty;
-        private string status = string.Empty;
-        private int indentWidth = 4;
-        private string title = string.Empty;
-        private static int newFileCounter = 1;
+        private readonly IFileService fileService;  // ファイル操作サービス
+        private readonly IJsonService jsonService;  // JSON操作サービス
+        private string text = string.Empty;         // エディタ内のテキスト内容
+        private string filePath = string.Empty;     // 編集対象ファイルのパス
+        private string status = string.Empty;       // ステータスメッセージ
+        private int indentWidth = 4;                // JSON整形時のインデント幅
+        private string title = string.Empty;        // タブタイトル
+        private static int newFileCounter = 1;     // 新規ファイル用カウンタ
 
         // --- コンストラクタ。依存サービスを受け取り、コマンドを初期化します。
         // fileService  ファイル操作サービス
@@ -24,12 +24,12 @@ namespace ViewModels{
         public TextEditorViewModel(IFileService fileService, IJsonService jsonService){
             this.fileService = fileService;
             this.jsonService = jsonService;
-            ConvertCommand = new RelayCommand(_ => Convert());
-            FormatCommand = new RelayCommand(_ => Format());
+            ConvertCommand      = new RelayCommand(_ => Convert());
+            FormatCommand       = new RelayCommand(_ => Format());
             ToUpperCamelCommand = new RelayCommand(_ => ToUpperCamel());
-            ToSnakeCaseCommand = new RelayCommand(_ => ToSnakeCase());
-            OpenCommand = new RelayCommand(_ => Open());
-            SaveCommand = new RelayCommand(_ => Save());
+            ToSnakeCaseCommand  = new RelayCommand(_ => ToSnakeCase());
+            OpenCommand         = new RelayCommand(_ => Open());
+            SaveCommand         = new RelayCommand(_ => Save());
             Title = $"新規テキスト_{newFileCounter++}";
         }
 
@@ -45,18 +45,13 @@ namespace ViewModels{
             set{ status = value; OnPropertyChanged(); }
         }
 
-        // タブ区切りテキストをJSONに変換するコマンド
-        public ICommand ConvertCommand{ get; }
-        // JSONを整形するコマンド
-        public ICommand FormatCommand{ get; }
-        // プロパティ名をUpperCamelに変換するコマンド
-        public ICommand ToUpperCamelCommand{ get; }
-        // プロパティ名をsnake_caseに変換するコマンド
-        public ICommand ToSnakeCaseCommand{ get; }
-        // ファイルを開くコマンド
-        public ICommand OpenCommand{ get; }
-        // ファイルを保存するコマンド
-        public ICommand SaveCommand{ get; }
+        
+        public ICommand ConvertCommand          { get; }  // タブ区切りテキストをJSONに変換するコマンド
+        public ICommand FormatCommand           { get; }  // JSONを整形するコマンド
+        public ICommand ToUpperCamelCommand     { get; }  // プロパティ名をUpperCamelに変換するコマンド
+        public ICommand ToSnakeCaseCommand      { get; }  // プロパティ名をsnake_caseに変換するコマンド
+        public ICommand OpenCommand             { get; }  // ファイルを開くコマンド
+        public ICommand SaveCommand             { get; }  // ファイルを保存するコマンド
 
         // JSON整形時のインデント幅
         public int IndentWidth{

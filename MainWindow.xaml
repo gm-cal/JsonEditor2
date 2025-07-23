@@ -2,27 +2,34 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Controls"
-        Title="JsonEditor" Height="450" Width="800">
+        Title="JsonEditor" Height="450" Width="800"
+        Icon="Resources/Icons/AppIcon.png">
     <DockPanel>
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar>
                 <Button ToolTip="開く" Content="開く" Command="{Binding SelectedEditor.OpenCommand}" Margin="5,0"/>
                 <Button ToolTip="保存" Content="保存" Command="{Binding SelectedEditor.SaveCommand}" Margin="5,0"/>
+                <!--
                 <TextBlock Text="インデント:" Margin="5,0"/>
                 <TextBox Width="40" Text="{Binding SelectedEditor.IndentWidth, UpdateSourceTrigger=PropertyChanged}"/>
+                -->
                 <Button ToolTip="変換" Content="変換" Command="{Binding SelectedEditor.ConvertCommand}" Margin="5,0"/>
                 <Button ToolTip="整形" Content="整形" Command="{Binding SelectedEditor.FormatCommand}" Margin="5,0"/>
                 <Button ToolTip="UpperCamel" Command="{Binding SelectedEditor.ToUpperCamelCommand}" Margin="5,0">
                     <Image Source="Resources/Icons/UpperCamel.png" Width="16" Height="16"/>
                 </Button>
-                <Button ToolTip="snake_case" Content="snake_case" Command="{Binding SelectedEditor.ToSnakeCaseCommand}" Margin="5,0"/>
+                <Button ToolTip="snake_case" Command="{Binding SelectedEditor.ToSnakeCaseCommand}" Margin="5,0">
+                    <Image Source="Resources/Icons/SnakeCase.png" Width="16" Height="16"/>
+                </Button>
                 <Button ToolTip="インデント" Click="OnIndent" Margin="5,0">
                     <Image Source="Resources/Icons/Indent.png" Width="16" Height="16"/>
                 </Button>
                 <Button ToolTip="逆インデント" Click="OnUnindent" Margin="5,0">
                     <Image Source="Resources/Icons/revIndent.png" Width="16" Height="16"/>
                 </Button>
-                <Button ToolTip="設定" Content="設定" Click="OnSettings" Margin="5,0"/>
+                <Button ToolTip="設定" Click="OnSettings" Margin="5,0">
+                    <Image Source="Resources/Icons/setting.png" Width="16" Height="16"/>
+                </Button>
             </ToolBar>
         </ToolBarTray>
         <StatusBar DockPanel.Dock="Bottom">
