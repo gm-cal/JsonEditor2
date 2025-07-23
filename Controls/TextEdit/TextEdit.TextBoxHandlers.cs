@@ -5,6 +5,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using ViewModels;
 
 namespace Controls{
     public partial class TextEdit{
@@ -62,17 +63,13 @@ namespace Controls{
             int index = lineList.ItemContainerGenerator.IndexFromContainer(lineList.ContainerFromElement(tb));
             if(index < 0) return;
 
-            TextLine line = lines[index];
             int caret = tb.CaretIndex;
-            string before = line.Text.Substring(0, Math.Min(caret, line.Text.Length));
-            string after = line.Text.Substring(Math.Min(caret, line.Text.Length));
-
-            line.Text = before;
-            TextLine newLine = new TextLine { Text = after };
-            newLine.PropertyChanged += OnLineChanged;
-            lines.Insert(index + 1, newLine);
-            Renumber();
-            ScheduleVmUpdate();
+            if(DataContext is TextEditorViewModel vm){
+                vm.LineService.InsertNewLine(lines, index, caret);
+                lines[index + 1].PropertyChanged += OnLineChanged;
+                Renumber();
+                ScheduleVmUpdate();
+            }
 
             lineList.UpdateLayout();
             if(lineList.ItemContainerGenerator.ContainerFromIndex(index + 1) is ListBoxItem item){
@@ -91,22 +88,15 @@ namespace Controls{
             text = text.Replace("\r\n", "\n");
             string[] parts = text.Split('\n');
 
-            TextLine line = lines[index];
             int caret = tb.CaretIndex;
-            string before = line.Text.Substring(0, Math.Min(caret, line.Text.Length));
-            string after = line.Text.Substring(Math.Min(caret, line.Text.Length));
-
-            line.Text = before + parts[0];
-
-            for(int i = 1; i < parts.Length; i++){
-                TextLine nl = new TextLine { Text = parts[i] };
-                nl.PropertyChanged += OnLineChanged;
-                lines.Insert(index + i, nl);
+            if(DataContext is TextEditorViewModel vm){
+                vm.LineService.PasteLines(lines, index, caret, text);
+                for(int i = 1; i < parts.Length; i++){
+                    lines[index + i].PropertyChanged += OnLineChanged;
+                }
+                Renumber();
+                ScheduleVmUpdate();
             }
-
-            lines[index + parts.Length - 1].Text += after;
-            Renumber();
-            ScheduleVmUpdate();
 
             lineList.UpdateLayout();
             if(lineList.ItemContainerGenerator.ContainerFromIndex(index + parts.Length - 1) is ListBoxItem item){
