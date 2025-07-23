@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using System.Windows.Media.TextFormatting;
 using Microsoft.Win32;
 using Services;
 using Utils;
@@ -9,23 +10,31 @@ using Utils;
 namespace ViewModels{
     // テキストエディタのViewModel。ファイル操作やJSON変換・整形などの機能を提供します。
     public class TextEditorViewModel : INotifyPropertyChanged{
-        private readonly IFileService fileService;  // ファイル操作サービス
-        private readonly IJsonService jsonService;  // JSON操作サービス
-        public ITextLineInputService LineService { get; }
-        private string text                 = string.Empty;     // エディタ内のテキスト内容
-        private string filePath             = string.Empty;     // 編集対象ファイルのパス
-        private string status               = string.Empty;     // ステータスメッセージ
-        private int indentWidth             = 4;                // JSON整形時のインデント幅
-        private string title                = string.Empty;     // タブタイトル
-        private static int newFileCounter   = 1;                // 新規ファイル用カウンタ
+        private readonly IFileService           fileService;            // ファイル操作サービス
+        private readonly IJsonService           jsonService;            // JSON操作サービス
+        public ITextLineInputService            LineService;            // テキスト行入力サービス
+        private readonly ITextService           textService;            // テキスト操作サービス
+        private string text                     = string.Empty;         // エディタ内のテキスト内容
+        private List<TextLine> selectedLines    = new List<TextLine>(); // 選択された行のリスト
+        private string filePath                 = string.Empty;         // 編集対象ファイルのパス
+        private string status                   = string.Empty;         // ステータスメッセージ
+        private int indentWidth                 = 4;                    // JSON整形時のインデント幅
+        private string title                    = string.Empty;         // タブタイトル
+        private static int newFileCounter       = 1;                    // 新規ファイル用カウンタ
 
         // --- コンストラクタ。依存サービスを受け取り、コマンドを初期化します。
         // fileService  ファイル操作サービス
         // jsonService  JSON操作サービス
-        public TextEditorViewModel(IFileService fileService, IJsonService jsonService, ITextLineInputService lineService){
-            this.fileService = fileService;
-            this.jsonService = jsonService;
-            LineService = lineService;
+        public TextEditorViewModel(
+            IFileService fileService,
+            IJsonService jsonService,
+            ITextLineInputService lineInputService,
+            ITextService textService
+        ){
+            this.fileService        = fileService;
+            this.jsonService        = jsonService;
+            LineService             = lineInputService;
+            this.textService        = textService;
             ConvertCommand      = new RelayCommand(_ => Convert());
             FormatCommand       = new RelayCommand(_ => Format());
             ToUpperCamelCommand = new RelayCommand(_ => ToUpperCamel());
@@ -102,7 +111,7 @@ namespace ViewModels{
         }
 
         private void ToUpperCamel(){
-            if(jsonService.TryToUpperCamel(Text, IndentWidth, out string converted, out string error)){
+            if(textService.TryToUpperCamel(Text, IndentWidth, out string converted, out string error)){
                 Text = converted;
                 Status = "UpperCamelに変換しました";
             }else{
@@ -111,7 +120,7 @@ namespace ViewModels{
         }
 
         private void ToSnakeCase(){
-            if(jsonService.TryToSnakeCase(Text, IndentWidth, out string converted, out string error)){
+            if(textService.TryToSnakeCase(Text, IndentWidth, out string converted, out string error)){
                 Text = converted;
                 Status = "snake_caseに変換しました";
             }else{
