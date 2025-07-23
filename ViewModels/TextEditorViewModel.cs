@@ -12,12 +12,12 @@ namespace ViewModels{
         private readonly IFileService fileService;  // ファイル操作サービス
         private readonly IJsonService jsonService;  // JSON操作サービス
         public ITextLineInputService LineService { get; }
-        private string text = string.Empty;         // エディタ内のテキスト内容
-        private string filePath = string.Empty;     // 編集対象ファイルのパス
-        private string status = string.Empty;       // ステータスメッセージ
-        private int indentWidth = 4;                // JSON整形時のインデント幅
-        private string title = string.Empty;        // タブタイトル
-        private static int newFileCounter = 1;     // 新規ファイル用カウンタ
+        private string text                 = string.Empty;     // エディタ内のテキスト内容
+        private string filePath             = string.Empty;     // 編集対象ファイルのパス
+        private string status               = string.Empty;     // ステータスメッセージ
+        private int indentWidth             = 4;                // JSON整形時のインデント幅
+        private string title                = string.Empty;     // タブタイトル
+        private static int newFileCounter   = 1;                // 新規ファイル用カウンタ
 
         // --- コンストラクタ。依存サービスを受け取り、コマンドを初期化します。
         // fileService  ファイル操作サービス
@@ -145,11 +145,10 @@ namespace ViewModels{
             }
         }
 
-        // <inheritdoc/>
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         // プロパティ変更通知を発行します。
         /// name    プロパティ名
+        public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string? name = null){
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }

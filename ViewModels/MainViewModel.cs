@@ -25,17 +25,20 @@ namespace ViewModels{
             AddTab();
         }
 
+        // 編集中のテキストエディタ
         public TextEditorViewModel? SelectedEditor{
             get{ return selectedEditor; }
             set{ selectedEditor = value; OnPropertyChanged(); }
         }
 
+        // タブを追加します。
         private void AddTab(){
             TextEditorViewModel editor = new TextEditorViewModel(fileService, jsonService, lineService);
             Editors.Add(editor);
             SelectedEditor = editor;
         }
 
+        // タブを閉じます。
         private void RemoveTab(TextEditorViewModel? editor){
             if(editor == null) return;
             int index = Editors.IndexOf(editor);
@@ -49,8 +52,9 @@ namespace ViewModels{
             }
         }
 
+        // プロパティ変更通知を発行します。
+        // name    プロパティ名
         public event PropertyChangedEventHandler? PropertyChanged;
-
         private void OnPropertyChanged([CallerMemberName] string? name = null){
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
