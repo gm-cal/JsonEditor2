@@ -1,7 +1,7 @@
 using System.Text;
 
 namespace Services{
-    public partial class JsonService : IJsonService{
+    public partial class TextService : ITextService{
         // --- スネークケース変換
         public bool TryToSnakeCase(string input, int indentWidth, out string converted, out string error){
             return TryRenameProperties(input, indentWidth, ToSnakeCase, out converted, out error);

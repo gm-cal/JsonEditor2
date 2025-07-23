@@ -1,7 +1,7 @@
 using System.Text;
 
 namespace Services{
-    public partial class JsonService : IJsonService{
+    public partial class TextService : ITextService{
         // --- アッパーキャメルケース変換
         public bool TryToUpperCamel(string input, int indentWidth, out string converted, out string error){
             return TryRenameProperties(input, indentWidth, ToUpperCamel, out converted, out error);
