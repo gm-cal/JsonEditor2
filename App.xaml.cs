@@ -20,6 +20,7 @@ public partial class App : Application{
         services.AddSingleton<IFileService, FileService>();
         services.AddSingleton<IJsonService, JsonService>();
         services.AddSingleton<ITextLineInputService, TextLineInputService>();
+        services.AddSingleton<ITextService, TextService>();
 
         services.AddTransient<TextEditorViewModel>();
         services.AddTransient<MainViewModel>();
